@@ -13,15 +13,14 @@ using namespace El;
 using namespace std;
 
 
-/** \fn read_matrix(DistMatrix<F, XColDist, XRowDist>* A, char* filename)
+/** \fn read_matrix(ElementalMatrix<F>* A, char* filename)
  * \brief Reads matrix in a binary format, and puts the data in Elemental DistMatrix.
  * \param A			Elemental DistMatrix of template type F. Used to store the input Hermitian matrix
  * \param filename		Pointer to an array of characters. Contains the name of the binary file that contains the matrix.
  * \return void
  */
-template<typename F,Distribution XColDist,Distribution XRowDist> void 
-read_matrix(DistMatrix<F, XColDist, XRowDist>* A, 
-	    char*                              filename)
+template<typename F>
+void read_matrix(ElementalMatrix<F>* A, char* filename)
 {
   const int c_shift  = A->ColShift();  // first row we own
   const int r_shift  = A->RowShift();  // first col we own
@@ -57,15 +56,16 @@ read_matrix(DistMatrix<F, XColDist, XRowDist>* A,
   return;
 }
  
-/** \fn write_matrix(DistMatrix<F, XColDist, XRowDist>* A, char* filename)
+/** \fn write_matrix(ElementalMatrix<F>* A, char* filename)
  * \brief Outputs an Elemental DistMatrix in a binary format.
  * \param A			Elemental DistMatrix of template type F. 
  * \param filename		Pointer to an array of characters. Contains the name of the binary file where the matrix is to be written.
  * \return void
  */
-template<typename F,Distribution XColDist,Distribution XRowDist> void 
-write_matrix(DistMatrix<F, XColDist, XRowDist>* A, 
-	     char*                              filename)
+template<typename F,Dist XColDist,Dist XRowDist>
+void write_matrix
+(DistMatrix<F, XColDist, XRowDist>* A, 
+ char* filename)
 {
   FILE* stream = NULL;
   const int height = A->Height();

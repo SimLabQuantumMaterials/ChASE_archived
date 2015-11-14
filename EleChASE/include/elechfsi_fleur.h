@@ -7,8 +7,8 @@ using namespace El;
 
 #include "chase.hpp"
 
-typedef Complex<double> C;
 typedef double R;
+typedef Complex<R> C;
 
 #ifdef CPP_INVERSION
 typedef double F;
@@ -44,6 +44,5 @@ extern "C"
 
 void set_AB(DistMatrix<F> &A, DistMatrix<F> &B);
 void init_gd(Grid &g, int N);
-
 
 #endif // ELECHFSI_FLEUR

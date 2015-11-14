@@ -22,10 +22,9 @@ using namespace El;
 
 /// \endcond
 
-typedef double Real;
-typedef Complex<Real> C;
-
 /// \cond
+
+// TODO: Use enums here?
 #define ELECHFSI_RANDOM 1
 #define ELECHFSI_APPROX 0
 
@@ -126,19 +125,20 @@ typedef Complex<Real> C;
  *                      to the filter. Additional calls to the filter use an optimal polynomial degree tailored to each filtered
  *                      vector.
  */
-template<typename F> void
-chase(UpperOrLower                uplo,
-      DistMatrix<F>&              H,
-      DistMatrix<F>&              V,
-      DistMatrix<Real, VR, STAR>& Lambda,
-      const int   nev,
-      const int   nex,
-      const int   deg,
-      int* const  degrees,
-      const Real  tol,
-      Real* const resid,
-      const int   mode,
-      const int   opt);
+template<typename F>
+void chase
+(UpperOrLower uplo,
+ DistMatrix<F>& H,
+ DistMatrix<F>& V,
+ DistMatrix<Base<F>,VR,STAR>& Lambda,
+ const int nev,
+ const int nex,
+ const int deg,
+ int* const degrees,
+ const Base<F> tol,
+ Base<F>* const resid,
+ const int mode,
+ const int opt);
 
 bool get_stat();
 void set_stat(bool stat);
@@ -163,7 +163,6 @@ int  get_lanczos();
 void set_lanczos(int);
 
 void swap_perm(int, int, int*, int*);
-void swap_eigval(int, int, DistMatrix<Real, VR, STAR> &);
 
 template <typename T>
 void swap_kj(int k, int j, T* array)
@@ -175,48 +174,29 @@ void swap_kj(int k, int j, T* array)
 }
 
 template<typename F>
-/** \fn swap_eigvec(int k, int j, DistMatrix<F> &V, DistMatrix<F, STAR, STAR> &tmp)
- * \brief Swaps eigenvectors
- * \details This function swaps two eigenvectors in the matrix V, the ones with indices k and j. It basically exchanges two columns of
- * a given Elemental distributed matrix V.
- * \param k           Integer specifying one of the columns that is to be swaped
- * \param j           Integer specifying the other column that is to be swaped
- * \param V           Elemental DistMatrix of template type F. A matrix where each vector is a separate column in the matrix V.
- * \param tmp         Elemental DistMatrix of template type F. Temporary storage matrix.
- * \return void
- */
-void swap_eigvec(int k, int j, DistMatrix<F> &V, DistMatrix<F, STAR, STAR> &tmp)
+void chase
+( UpperOrLower uplo,
+  DistMatrix<F>& H,
+  DistMatrix<F>& V,
+  DistMatrix<Base<F>,VR,STAR>& Lambda,
+  const int nev,
+  const int nex,
+  const int deg,
+  int* const degrees,
+  const Base<F> tol,
+  Base<F>* const resid,
+  const int mode,
+  const int opt)
 {
-  DistMatrix<F> view1(V.Grid()), view2(V.Grid());
-  View(view1, V, 0, k, V.Height(), 1);
-  View(view2, V, 0, j, V.Height(), 1);
-  tmp   = view1;
-  view1 = view2;
-  view2 = tmp;
-  return;
-}
+  typedef Base<F> Real;
 
-template<typename F> void
-chase(UpperOrLower                uplo,
-      DistMatrix<F>&        H,
-      DistMatrix<F>&              V,
-      DistMatrix<Real, VR, STAR>& Lambda,
-      const int   nev,
-      const int   nex,
-      const int   deg,
-      int* const  degrees,
-      const Real  tol,
-      Real* const resid,
-      const int   mode,
-      const int   opt)
-{
   DistMatrix<F> V_view(H.Grid()), W_view(H.Grid());
-  DistMatrix<Real, VR, STAR> Lambda_view(H.Grid());
+  DistMatrix<Real,VR,STAR> Lambda_view(H.Grid());
 
   DistMatrix<F> H_reduced(H.Grid()), V_reduced(H.Grid());
-  DistMatrix<Real, VR, STAR> Lambda_reduced(H.Grid());
+  DistMatrix<Real,VR,STAR> Lambda_reduced(H.Grid());
 
-  DistMatrix<F, STAR, STAR> tmp_FSS(V.Height(), 1, V.Grid());
+  DistMatrix<F,STAR,STAR> tmp_FSS(V.Height(), 1, V.Grid());
 
   const int N = H.Height();      // Size of the problem.
 
@@ -232,7 +212,7 @@ chase(UpperOrLower                uplo,
 
   // Will be used for the residual
   norm_H = Nrm2(H);
-  corTol = tol * max( norm_H, Real(1.0) );
+  corTol = tol * max( norm_H, Real(1) );
   /*** Single optimization. Init. ***/
   int index;
   int* pi     = new int[nev];
@@ -266,25 +246,28 @@ chase(UpperOrLower                uplo,
   //     for (int i = 0; i < nev ; ++i)
   //       set_degree(i, (degrees != NULL) ? degrees[i] : deg);
 
-  set_time(BGN_TOTAL,   mpi::Time());
+  set_time(BGN_TOTAL, mpi::Time());
 
   /*** Lanczos. ***/
   set_time(BGN_LANCZOS, mpi::Time());
   View(W_view, W, 0, 0, N, 1);
   MakeUniform(W_view);
 
+  auto applyH = 
+    [&]( const DistMatrix<F>& x, DistMatrix<F>& y )
+    { Hemv( uplo, F(1), H, x, F(0), y ); };
   if (mode == ELECHFSI_APPROX)
-    lanczos(uplo, H, W_view, get_lanczos(),get_lanczos(),
+    lanczos(applyH, W_view, get_lanczos(),get_lanczos(),
             block, &upper, NULL, NULL);
   if (mode == ELECHFSI_RANDOM)
-    lanczos(uplo, H, W_view, get_lanczos(), 2*block/*4*get_lanczos()*/,
+    lanczos(applyH, W_view, get_lanczos(), 2*block/*4*get_lanczos()*/,
             block, &upper, &lower, &lambda);
 
-  mpi::Broadcast(&upper, 1, 0, H.Grid().Comm());
+  mpi::Broadcast(upper, 0, H.Grid().Comm());
   if (mode == ELECHFSI_RANDOM)
     {
-      mpi::Broadcast(&lower,  1, 0, H.Grid().Comm());
-      mpi::Broadcast(&lambda, 1, 0, H.Grid().Comm());
+      mpi::Broadcast(lower,  0, H.Grid().Comm());
+      mpi::Broadcast(lambda, 0, H.Grid().Comm());
     }
   set_time(END_LANCZOS, mpi::Time() - get_time(BGN_LANCZOS));
 
@@ -301,11 +284,11 @@ chase(UpperOrLower                uplo,
         {
           tmp = *std::min_element(Lambda_view.Buffer(),
                                   Lambda_view.Buffer()+Lambda_view.LocalHeight());
-          mpi::AllReduce(&tmp, &lambda, 1, mpi::MIN, H.Grid().Comm());
+          lambda = mpi::AllReduce(tmp, mpi::MIN, H.Grid().Comm());
 
           tmp = *std::max_element(Lambda_view.Buffer(),
                                   Lambda_view.Buffer()+Lambda_view.LocalHeight());
-          mpi::AllReduce(&tmp, &lower,  1, mpi::MAX, H.Grid().Comm());
+          lower = mpi::AllReduce(tmp, mpi::MAX, H.Grid().Comm());
         }
 
       /*** Chebyshev filter. ***/
@@ -321,7 +304,7 @@ chase(UpperOrLower                uplo,
                 {
                   swap_kj(k, j, degrees);
                   swap_perm(k, j, pi, pi_inv);
-                  swap_eigvec(k, j, V, tmp_FSS);
+                  ColSwap( V, k, j );
                 }
         }
 
@@ -343,11 +326,11 @@ chase(UpperOrLower                uplo,
       set_time(BGN_REDUCED, mpi::Time());
       View(V_view, V,  0, converged, N, block);
       View(W_view, W,  0, converged, N, block);
-      Hemm(LEFT, uplo, F(1.0), H, W_view, F(0.0), V_view);
+      Hemm(LEFT, uplo, F(1), H, W_view, F(0), V_view);
 
       H_reduced.AlignWith(W_view);
       H_reduced.Resize(block, block);
-      Gemm(ADJOINT, NORMAL, F(1.0), W_view, V_view, F(0.0), H_reduced);
+      Gemm(ADJOINT, NORMAL, F(1), W_view, V_view, F(0), H_reduced);
 
       HermitianEig(uplo, H_reduced, Lambda_reduced, V_reduced, ASCENDING);
 
@@ -360,7 +343,7 @@ chase(UpperOrLower                uplo,
       Lambda_view = Lambda_reduced;
       H_reduced.AlignWith(W_view);
       H_reduced = V_reduced;
-      Gemm(NORMAL, NORMAL, F(1.0), W_view, H_reduced, F(0.0), V_view);
+      Gemm(NORMAL, NORMAL, F(1), W_view, H_reduced, F(0), V_view);
 
       set_time(END_REDUCED, get_time(END_REDUCED) + mpi::Time() - get_time(BGN_REDUCED));
 
@@ -378,7 +361,7 @@ chase(UpperOrLower                uplo,
       View(Lambda_view, Lambda, converged, 0, block-nex, 1);
 
       DiagonalScale(RIGHT, NORMAL, Lambda_view, W_view);
-      Hemm(LEFT, uplo, F(1.0), H, V_view, F(-1.0), W_view);
+      Hemm(LEFT, uplo, F(1), H, V_view, F(-1), W_view);
       for (int i = converged; i < nev; ++i)
         {
           View(V_view, V, 0, i, N, 1);
@@ -393,7 +376,7 @@ chase(UpperOrLower                uplo,
           // || H x - lambda x || / ( max( ||H||, |lambda| ) )
           // norm_2 <- || H x - lambda x ||
           norm_2 = Nrm2(W_view);
-          resid[i] = norm_2 / ( max( norm_H, Real(1.0) ) );
+          resid[i] = norm_2 / ( max( norm_H, Real(1) ) );
         }
 
       /*** Check for convergence. ***/
@@ -405,8 +388,8 @@ chase(UpperOrLower                uplo,
             {
               if (opt != ELECHFSI_NO_OPT) swap_kj(j, converged, degrees);
               swap_perm(j, converged, pi, pi_inv);
-              swap_eigval(j, converged, Lambda);
-              swap_eigvec(j, converged, V, tmp_FSS);
+              RowSwap( Lambda, j, converged );
+              ColSwap( V, j, converged );
               swap_kj(j, converged, resid);
             }
           converged++;
@@ -431,8 +414,8 @@ chase(UpperOrLower                uplo,
             {
               if (opt != ELECHFSI_NO_OPT) swap_kj(0, index, degrees);
               swap_perm(0, index, pi, pi_inv);
-              swap_eigval(0, index, Lambda);
-              swap_eigvec(0, index, V, tmp_FSS);
+              RowSwap( Lambda, 0, index );
+              ColSwap( V, 0, index );
               swap_kj(0, index, resid);
             }
         }

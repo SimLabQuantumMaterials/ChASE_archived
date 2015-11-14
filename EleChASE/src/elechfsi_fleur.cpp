@@ -18,8 +18,6 @@ DistMatrix<F>* fleur_matrix(int n, F* buffer)
 
   F* localbuffer = mat->Buffer(); // this is the local buffer of the matrix
 
-  const int buffersize1 = mat->LocalWidth();
-  const int buffersize2 = mat->LocalHeight();
   int local_index = 0;
   int fleur_index = 0;
 
@@ -162,11 +160,6 @@ extern "C"
     for (int i = 0; i < neig; i++)
       {
         //Copy eigenvalue
-        int pe = mpi::Rank(gd->mpi_comm);
-        int in = i*mpi::Size(gd->mpi_comm)+pe;
-
-        // cerr<< "PE:" << pe << ":" << i << "->" << in << endl;
-
         eig[i] = eigbuf[i];
 
         //Copy eigenvector

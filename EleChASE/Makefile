@@ -1,4 +1,23 @@
-include ${HOME}/libs/conf/ElVars
+ifdef EL_HOME
+ include ${EL_HOME}/conf/ElVars
+else
+ include ${HOME}/libs/conf/ElVars
+endif
+
+ifndef FLEUR_INSTALL
+  # Why libs/lib/ instead of just lib/?
+  FLEUR_INSTALL="~/FleurChase/libs/lib/"
+endif
+
+# Ensure that the obj/ folder exists
+MKDIR_P = mkdir -p
+.PHONY: directories
+all: directories libchase.a
+
+directories: obj
+
+obj:
+	${MKDIR_P} obj/
 
 main: obj/chase.o obj/main.o
 	${CXX} ${EL_COMPILE_FLAGS} obj/main.o obj/chase.o -o $@ ${EL_LINK_FLAGS} ${EL_LIBS}
@@ -25,4 +44,4 @@ obj/chase_f.o: chase.F90
 	gfortran -c chase.F90  -o $@
 
 install:
-	cp libchase.a ~/FleurChase/libs/lib
+	cp libchase.a ${FLEUR_INSTALL}

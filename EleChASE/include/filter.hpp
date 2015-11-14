@@ -18,9 +18,6 @@ using namespace std;
 
 /// \endcond
 
-typedef double Real;
-typedef Complex<Real> C;
-
 /** \fn filter(UpperOrLower uplo, const DistMatrix<F>& A, DistMatrix<F>& V, DistMatrix<F>& W,
            int start, int width, const int deg, int const* const degrees,
            const int deglen, const R lambda, const R lower, const R upper)
@@ -49,20 +46,22 @@ typedef Complex<Real> C;
  *
  * \return  int A positive integer, the number of filtered vectors
  */
-template<typename F> int
-filter(UpperOrLower         uplo,
-       DistMatrix<F>& A,
-       DistMatrix<F>&       V,
-       DistMatrix<F>&       W,
-       int                  start,
-       int                  width,
-       const int            deg,
-       int const* const     degrees,
-       const int            deglen,
-       const Real           lambda,
-       const Real           lower,
-       const Real           upper)
+template<typename F>
+int filter
+(UpperOrLower uplo,
+ DistMatrix<F>& A,
+ DistMatrix<F>& V,
+ DistMatrix<F>& W,
+ int start,
+ int width,
+ const int deg,
+ int const* const degrees,
+ const int deglen,
+ const Base<F> lambda,
+ const Base<F> lower,
+ const Base<F> upper)
 {
+  typedef Base<F> Real;
   DistMatrix<F> V_view(A.Grid()), W_view(A.Grid());
   Real c = (upper + lower)/2;
   Real e = (upper - lower)/2;
@@ -85,12 +84,15 @@ filter(UpperOrLower         uplo,
 
   if (degmax == 0) return total_vcts_filtered;
 
+  // NOTE: Why explicitly shift the diagonal when one could instead modify the
+  //       'alpha' coefficient in the subsequent Hemm's?
+
   // A = A - cI
   auto T = GetDiagonal(A);
   ShiftDiagonal(A, -c);
 
   alpha = F(sigma_scale/e);
-  beta  = F(0.0);
+  beta  = 0;
 
   V.AssertValidSubmatrix(0, 0, N, start+width);
   W.AssertValidSubmatrix(0, 0, N, start+width);
@@ -168,10 +170,10 @@ filter(UpperOrLower         uplo,
   /*** Remaining filtering steps. ***/
   for (int i = 2 ; i <= degmax ; ++i)
     {
-      sigma_new = 1.0/(2.0/sigma_scale - sigma);
+      sigma_new = Real(1)/(Real(2)/sigma_scale - sigma);
 
       // x = alpha(A-cI)y + beta*x
-      alpha = 2.0*sigma_new / e;
+      alpha = 2*sigma_new / e;
       beta  = -sigma*sigma_new;
 
       View(V_view, V, 0, start, N, width);

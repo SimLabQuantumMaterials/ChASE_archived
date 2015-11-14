@@ -12,7 +12,7 @@
 static bool elechfsi_stat = true;
 static int  elechfsi_filtered;
 static int  elechfsi_iteration;
-static Real elechfsi_time[12] = {0.0};
+static double elechfsi_time[12] = {0.0};
 static int  elechfsi_degmax = 40;
 static int  elechfsi_degrees_len;
 static int* elechfsi_degrees_ell = NULL;
@@ -32,14 +32,6 @@ void swap_perm(int k, int j, int* pi, int* pi_inv)
   return;
 }
 
-void swap_eigval(int k, int j, DistMatrix<Real, VR, STAR> &Lambda)
-{    
-  double tmp = Lambda.Get(k, 0);
-  Lambda.Set(k, 0, Lambda.Get(j, 0));
-  Lambda.Set(j, 0, tmp);
-  return;
-}
-                                                
 bool get_stat(){return elechfsi_stat;}
 void set_stat(bool stat){elechfsi_stat = stat;}
 
