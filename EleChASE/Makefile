@@ -6,23 +6,24 @@ endif
 
 ifndef FLEUR_INSTALL
   # Why libs/lib/ instead of just lib/?
-  FLEUR_INSTALL="~/FleurChase/libs/lib/"
+  FLEUR_INSTALL=~/FleurChase/libs/lib/
 endif
 
 # Ensure that the obj/ folder exists
 MKDIR_P = mkdir -p
-.PHONY: directories
-all: directories libchase.a filter main
+.PHONY: obj_dir install_dir
+all: libchase.a filter main
 
-directories: obj
-
-obj:
+obj_dir:
 	${MKDIR_P} obj/
 
-main: obj/chase.o obj/main.o
+install_dir:
+	${MKDIR_P} ${FLEUR_INSTALL}
+
+main: obj_dir obj/chase.o obj/main.o
 	${CXX} ${EL_COMPILE_FLAGS} obj/main.o obj/chase.o -o $@ ${EL_LINK_FLAGS} ${EL_LIBS}
 
-libchase.a: obj/chase.o obj/elechfsi_fleur.o
+libchase.a: obj_dir obj/chase.o obj/elechfsi_fleur.o
 	ar -rcs $@ obj/chase.o obj/elechfsi_fleur.o
 
 obj/chase.o: src/chase.cpp
@@ -38,10 +39,10 @@ filter: src/driver_filter.cpp
 	${CXX} ${EL_COMPILE_FLAGS} $< -o $@ ${EL_LINK_FLAGS} ${EL_LIBS}
 
 clean:
-	rm -f obj/* main filter chase.a
+	rm -f obj/* main filter libchase.a
 
 obj/chase_f.o: chase.F90
 	gfortran -c chase.F90  -o $@
 
-install:
+install: install_dir
 	cp libchase.a ${FLEUR_INSTALL}
