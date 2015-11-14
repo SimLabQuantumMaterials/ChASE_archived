@@ -4,6 +4,7 @@ using namespace El;
 
 typedef double Real;
 typedef Complex<Real> C;
+typedef C F;
 
 #include "../include/filter.hpp"
 //#include "../include/io.hpp"
@@ -31,7 +32,6 @@ int main(int argc, char* argv[])
       //FILE* degstream = NULL;
   
       const Grid g(mpi::COMM_WORLD, height);
-      const int commRank = mpi::Rank(mpi::COMM_WORLD);
       
       const int blk = nev + nex;
       DistMatrix<C> A(N, N, g), V(N, blk, g), W(N, blk, g);
