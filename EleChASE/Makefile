@@ -12,7 +12,7 @@ endif
 # Ensure that the obj/ folder exists
 MKDIR_P = mkdir -p
 .PHONY: directories
-all: directories libchase.a
+all: directories libchase.a filter
 
 directories: obj
 

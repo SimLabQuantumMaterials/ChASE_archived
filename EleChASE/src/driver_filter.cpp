@@ -54,7 +54,10 @@ int main(int argc, char* argv[])
         {
             Hemm( LEFT, UPPER, alpha, A, X, beta, Y ); 
         };
-      cout << filter(applyA, V, W, 0, blk, deg, NULL, 0, 1.0, 1.0, 4.0) << endl;
+
+      const int numFilt = filter( applyA, V, W, 0, blk, deg, NULL, 0, 1., 1., 4. );
+      if( mpi::WorldRank() == 0 )
+          Output("Filtered ",numFilt," vectors");
   }
   catch(exception& e) { ReportException(e); }
   
