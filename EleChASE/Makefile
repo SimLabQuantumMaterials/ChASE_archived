@@ -12,7 +12,7 @@ endif
 # Ensure that the obj/ folder exists
 MKDIR_P = mkdir -p
 .PHONY: directories
-all: directories libchase.a filter
+all: directories libchase.a filter main
 
 directories: obj
 
@@ -38,7 +38,7 @@ filter: src/driver_filter.cpp
 	${CXX} ${EL_COMPILE_FLAGS} $< -o $@ ${EL_LINK_FLAGS} ${EL_LIBS}
 
 clean:
-	rm -f obj/* main chase.a
+	rm -f obj/* main filter chase.a
 
 obj/chase_f.o: chase.F90
 	gfortran -c chase.F90  -o $@
