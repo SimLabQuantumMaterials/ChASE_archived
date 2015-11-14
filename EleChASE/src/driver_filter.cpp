@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
   Initialize(argc, argv);
  
   try
-    {
+  {
       const int N   = Input<int>("--n",   "problem size");
       const int nev = Input<int>("--nev", "number of wanted eigenpairs");
       const int nex = Input<int>("--nex", "extra block size", 40);
@@ -49,13 +49,14 @@ int main(int argc, char* argv[])
       Identity(V, N, blk);
       MakeUniform(W);
 
-      cout << filter(UPPER, A, V, W, 0, blk, deg, NULL, 0, 1.0, 1.0, 4.0) << endl;
-      
-    }
-  catch(exception& e) 
-    {
-      ReportException(e);
-    }
+      auto applyA = 
+        [&]( F alpha, const ElementalMatrix<F>& X, F beta, ElementalMatrix<F>& Y )
+        {
+            Hemm( LEFT, UPPER, alpha, A, X, beta, Y ); 
+        };
+      cout << filter(applyA, V, W, 0, blk, deg, NULL, 0, 1.0, 1.0, 4.0) << endl;
+  }
+  catch(exception& e) { ReportException(e); }
   
   Finalize();
   return 0;

@@ -127,18 +127,18 @@ using namespace El;
  */
 template<typename F>
 void chase
-(UpperOrLower uplo,
- DistMatrix<F>& H,
- DistMatrix<F>& V,
- DistMatrix<Base<F>,VR,STAR>& Lambda,
- const int nev,
- const int nex,
- const int deg,
- int* const degrees,
- const Base<F> tol,
- Base<F>* const resid,
- const int mode,
- const int opt);
+( UpperOrLower uplo,
+  DistMatrix<F>& H,
+  DistMatrix<F>& V,
+  DistMatrix<Base<F>,VR,STAR>& Lambda,
+  const int nev,
+  const int nex,
+  const int deg,
+  int* const degrees,
+  const Base<F> tol,
+  Base<F>* const resid,
+  const int mode,
+  const int opt );
 
 bool get_stat();
 void set_stat(bool stat);
@@ -189,16 +189,23 @@ void chase
   const int opt)
 {
   typedef Base<F> Real;
+  const Int N = V.Height();
+  const Grid& grid = H.Grid();
+  mpi::Comm comm = grid.Comm();
 
-  DistMatrix<F> V_view(H.Grid()), W_view(H.Grid());
-  DistMatrix<Real,VR,STAR> Lambda_view(H.Grid());
+  // NOTE: Other than this routine currently calling FrobeniusNorm on H,
+  //       it is entirely built around this black-box routine
+  auto applyH = 
+    [&]( F alpha, const ElementalMatrix<F>& X, F beta, ElementalMatrix<F>& Y )
+    { Hemm( LEFT, uplo, alpha, H, X, beta, Y ); };
 
-  DistMatrix<F> H_reduced(H.Grid()), V_reduced(H.Grid());
-  DistMatrix<Real,VR,STAR> Lambda_reduced(H.Grid());
+  DistMatrix<F> V_view(grid), W_view(grid);
+  DistMatrix<Real,VR,STAR> Lambda_view(grid);
 
-  DistMatrix<F,STAR,STAR> tmp_FSS(V.Height(), 1, V.Grid());
+  DistMatrix<F> H_reduced(grid), V_reduced(grid);
+  DistMatrix<Real,VR,STAR> Lambda_reduced(grid);
 
-  const int N = H.Height();      // Size of the problem.
+  DistMatrix<F,STAR,STAR> tmp_FSS(N, 1, grid);
 
   int converged, converged_old;  // Number of converged eigenpairs.
   int block = nev + nex;         // Decreases as the vectors are locked.
@@ -208,10 +215,10 @@ void chase
   Real tmp, norm_1, norm_2, norm_H;         // For the computation of the residuals.
   Real corTol; // tolerance, corrected to use of residual
 
-  DistMatrix<F> W(N, block, H.Grid());
+  DistMatrix<F> W(N, block, grid);
 
   // Will be used for the residual
-  norm_H = Nrm2(H);
+  norm_H = FrobeniusNorm( H );
   corTol = tol * max( norm_H, Real(1) );
   /*** Single optimization. Init. ***/
   int index;
@@ -221,26 +228,26 @@ void chase
   Real lambda_min;
 
   for (int j = 0; j < nev; ++j)
-    pi[j] = pi_inv[j] = j;
+      pi[j] = pi_inv[j] = j;
 
   if (opt != ELECHFSI_NO_OPT) rho = new Real[nev];
   else                        rho = NULL;
   if (opt != ELECHFSI_NO_OPT) assert(degrees != NULL);
   if (opt == ELECHFSI_OPT_SINGLE)
-    for (int j = 0; j < nev; ++j)
-      degrees[j] = deg;
+      for (int j = 0; j < nev; ++j)
+          degrees[j] = deg;
   if (opt == ELECHFSI_OPT_MULTIPLE)
-    for (int j = 0; j < nev; ++j)
-      if (degrees[j] > deg) degrees[j] = deg;
+      for (int j = 0; j < nev; ++j)
+          if (degrees[j] > deg) degrees[j] = deg;
 
   // Initializing internal variables.
   if (get_stat() == true)
-    {
+  {
       set_filtered(0);
       init_degrees(nev);
       for(int i = 0; i < 12 ; ++i)
-        set_time(i, 0.0);
-    }
+          set_time(i, 0.0);
+  }
 
   //   if (get_stat() == true || opt == ELECHFSI_OPT_MULTIPLE)
   //     for (int i = 0; i < nev ; ++i)
@@ -253,22 +260,21 @@ void chase
   View(W_view, W, 0, 0, N, 1);
   MakeUniform(W_view);
 
-  auto applyH = 
-    [&]( const DistMatrix<F>& x, DistMatrix<F>& y )
-    { Hemv( uplo, F(1), H, x, F(0), y ); };
   if (mode == ELECHFSI_APPROX)
-    lanczos(applyH, W_view, get_lanczos(),get_lanczos(),
-            block, &upper, NULL, NULL);
+    lanczos
+    ( applyH, W_view, get_lanczos(),get_lanczos(),
+      block, &upper, NULL, NULL );
   if (mode == ELECHFSI_RANDOM)
-    lanczos(applyH, W_view, get_lanczos(), 2*block/*4*get_lanczos()*/,
-            block, &upper, &lower, &lambda);
+    lanczos 
+    ( applyH, W_view, get_lanczos(), 2*block/*4*get_lanczos()*/,
+      block, &upper, &lower, &lambda);
 
-  mpi::Broadcast(upper, 0, H.Grid().Comm());
+  mpi::Broadcast( upper, 0, comm );
   if (mode == ELECHFSI_RANDOM)
-    {
-      mpi::Broadcast(lower,  0, H.Grid().Comm());
-      mpi::Broadcast(lambda, 0, H.Grid().Comm());
-    }
+  {
+      mpi::Broadcast( lower,  0, comm );
+      mpi::Broadcast( lambda, 0, comm );
+  }
   set_time(END_LANCZOS, mpi::Time() - get_time(BGN_LANCZOS));
 
 
@@ -276,20 +282,22 @@ void chase
   converged = 0;
   iteration = 0;
   while (converged < nev && iteration < get_maxiter())
-    {
+  {
       View(Lambda_view, Lambda, converged, 0, block, 1);
 
       // Set the parameters lambda and lower for the filter.
       if (iteration != 0 || mode != ELECHFSI_RANDOM)
-        {
-          tmp = *std::min_element(Lambda_view.Buffer(),
-                                  Lambda_view.Buffer()+Lambda_view.LocalHeight());
-          lambda = mpi::AllReduce(tmp, mpi::MIN, H.Grid().Comm());
+      {
+          tmp = *std::min_element
+                ( Lambda_view.Buffer(),
+                  Lambda_view.Buffer()+Lambda_view.LocalHeight() );
+          lambda = mpi::AllReduce( tmp, mpi::MIN, comm );
 
-          tmp = *std::max_element(Lambda_view.Buffer(),
-                                  Lambda_view.Buffer()+Lambda_view.LocalHeight());
-          lower = mpi::AllReduce(tmp, mpi::MAX, H.Grid().Comm());
-        }
+          tmp = *std::max_element
+                ( Lambda_view.Buffer(),
+                  Lambda_view.Buffer()+Lambda_view.LocalHeight() );
+          lower = mpi::AllReduce( tmp, mpi::MAX, comm );
+      }
 
       /*** Chebyshev filter. ***/
       // The input is assumed to be in V, the output will be in W.
@@ -297,36 +305,39 @@ void chase
 
       /* Single optimization. Ordering vectors according to filter degree. */
       if (opt != ELECHFSI_NO_OPT)
-        {
+      {
           for (int j = converged; j < nev-1; ++j)
-            for (int k = j+1; k < nev; ++k)
-              if (degrees[k] < degrees[j])
-                {
-                  swap_kj(k, j, degrees);
-                  swap_perm(k, j, pi, pi_inv);
-                  ColSwap( V, k, j );
-                }
-        }
+          {
+              for (int k = j+1; k < nev; ++k)
+              {
+                  if (degrees[k] < degrees[j])
+                  {
+                      swap_kj(k, j, degrees);
+                      swap_perm(k, j, pi, pi_inv);
+                      ColSwap( V, k, j );
+                  }
+              }
+          }
+      }
 
       int filtered_ell = filter
-        (uplo, H, V, W, converged, block, deg, degrees ? degrees+converged : NULL,
-         nev-converged, lambda, lower, upper);
+        ( applyH, V, W, converged, block, deg,
+          degrees ? degrees+converged : NULL,
+          nev-converged, lambda, lower, upper);
 
       set_filtered(get_filtered()+filtered_ell);
       set_time(END_FILTER, get_time(END_FILTER) + mpi::Time() - get_time(BGN_FILTER));
-
 
       /*** Orthogonalization. ***/
       set_time(BGN_QR, mpi::Time());
       qr::ExplicitUnitary(W);
       set_time(END_QR, get_time(END_QR) + mpi::Time() - get_time(BGN_QR));
 
-
       /*** Reduce problem: construct, solve, apply back transformation. ***/
       set_time(BGN_REDUCED, mpi::Time());
-      View(V_view, V,  0, converged, N, block);
-      View(W_view, W,  0, converged, N, block);
-      Hemm(LEFT, uplo, F(1), H, W_view, F(0), V_view);
+      View( V_view, V,  0, converged, N, block );
+      View( W_view, W,  0, converged, N, block );
+      applyH( F(1), W_view, F(0), V_view );
 
       H_reduced.AlignWith(W_view);
       H_reduced.Resize(block, block);
@@ -337,7 +348,7 @@ void chase
       /* Single optimization. Sort the permutation. (The eigenpairs are sorted.) */
       std::sort(pi+converged, pi+nev);
       for (int j = 0; j < nev; ++j)
-        pi_inv[pi[j]] = j;
+          pi_inv[pi[j]] = j;
 
       // Back transformation.
       Lambda_view = Lambda_reduced;
@@ -346,7 +357,6 @@ void chase
       Gemm(NORMAL, NORMAL, F(1), W_view, H_reduced, F(0), V_view);
 
       set_time(END_REDUCED, get_time(END_REDUCED) + mpi::Time() - get_time(BGN_REDUCED));
-
 
       /** Compute residuals. ***/
       // Copy non converged from V to W.
@@ -361,9 +371,9 @@ void chase
       View(Lambda_view, Lambda, converged, 0, block-nex, 1);
 
       DiagonalScale(RIGHT, NORMAL, Lambda_view, W_view);
-      Hemm(LEFT, uplo, F(1), H, V_view, F(-1), W_view);
+      applyH( F(1), V_view, F(-1), W_view );
       for (int i = converged; i < nev; ++i)
-        {
+      {
           View(V_view, V, 0, i, N, 1);
           View(W_view, W, 0, i, N, 1);
 
@@ -377,54 +387,54 @@ void chase
           // norm_2 <- || H x - lambda x ||
           norm_2 = Nrm2(W_view);
           resid[i] = norm_2 / ( max( norm_H, Real(1) ) );
-        }
+      }
 
       /*** Check for convergence. ***/
       converged_old = converged;
       for (int j = converged; j < nev; ++j)
-        {
+      {
           if (resid[j] > corTol) continue;
           if (j != converged)
-            {
+          {
               if (opt != ELECHFSI_NO_OPT) swap_kj(j, converged, degrees);
               swap_perm(j, converged, pi, pi_inv);
               RowSwap( Lambda, j, converged );
               ColSwap( V, j, converged );
               swap_kj(j, converged, resid);
-            }
+          }
           converged++;
-        }
+      }
       // Make sure that perm_inv[0] has the smallest eigpair.
       if (converged != converged_old)
-        {
+      {
           index = pi_inv[0];
           lambda_min = Lambda.Get(index, 0);
 
           for (int j = 1; j < converged ; ++j)
-            {
+          {
               tmp = Lambda.Get(j, 0);
               if (tmp < lambda_min)
-                {
+              {
                   lambda_min = tmp;
                   index = j;
-                }
-            }
+              }
+          }
 
           if (index != pi_inv[0])
-            {
+          {
               if (opt != ELECHFSI_NO_OPT) swap_kj(0, index, degrees);
               swap_perm(0, index, pi, pi_inv);
               RowSwap( Lambda, 0, index );
               ColSwap( V, 0, index );
               swap_kj(0, index, resid);
-            }
-        }
+          }
+      }
 
       block -= (converged-converged_old);
 
       /* Single optimization. Find optimal degrees. */
       if (opt != ELECHFSI_NO_OPT)
-        {
+      {
           c = (upper+lower)/2;
           e = (upper-lower)/2;
 
@@ -435,7 +445,7 @@ void chase
           rho[pi_inv[0]] = (tmp >= 1) ? tmp : 1/tmp;
 
           for (int j = converged ; j < nev ; ++j)
-            {
+          {
               rho[j] = (Lambda.Get(j, 0)-c)/e;
               tmp    = sqrt(rho[j]*rho[j]-1);
               tmp   += fabs(rho[j]);
@@ -444,9 +454,9 @@ void chase
               degrees[j] = ceil(fabs(log(resid[j]/(corTol))/log(rho[j])));
               degrees[j] = degrees[j] + get_delta();
               if (degrees[j] > get_degmax())
-                degrees[j] = get_degmax();
-            }
-        }
+                  degrees[j] = get_degmax();
+          }
+      }
 
       // if (get_stat() == true || opt == ELECHFSI_OPT_MULTIPLE)
       //        for (int i = converged ; i < nev ; ++i)
@@ -457,18 +467,18 @@ void chase
 
       // If there are changes, copy the views.
       if(converged-converged_old)
-        {
+      {
           View(V_view, V, 0, converged_old, N, converged-converged_old);
           View(W_view, W, 0, converged_old, N, converged-converged_old);
           W_view = V_view;
-        }
+      }
 
       set_time(END_CONV, get_time(END_CONV) + mpi::Time() - get_time(BGN_CONV));
-    }
+  }
 
   set_iteration(iteration);
   V = W;                                 // Need to check if this is really needed.
-  herm_eig::Sort(Lambda, V, ASCENDING);
+  herm_eig::Sort( Lambda, V, ASCENDING );
 
   //   if (opt == ELECHFSI_OPT_MULTIPLE)
   //     for (int i = 0; i < nev; ++i)
@@ -482,6 +492,5 @@ void chase
 
   return;
 }
-
 
 #endif  // ELECHFSI_CHASE
