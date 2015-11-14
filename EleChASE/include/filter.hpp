@@ -60,10 +60,7 @@ int filter
   const Base<F> upper)
 {
   typedef Base<F> Real;
-  const Int N = V.Height();
-  const Grid& grid = V.Grid();
 
-  DistMatrix<F> V_view(grid), W_view(grid);
   Real c = (upper + lower)/2;
   Real e = (upper - lower)/2;
 
@@ -87,12 +84,6 @@ int filter
   alpha = F(sigma_scale/e);
   beta  = 0;
 
-  V.AssertValidSubmatrix(0, 0, N, start+width);
-  W.AssertValidSubmatrix(0, 0, N, start+width);
-
-  View(V_view, V, 0, start, N, width);
-  View(W_view, W, 0, start, N, width);
-
 #ifdef SEARCH_NAN
   //////////////////////////////////////////////////////////
   //             Here NaNs are never found
@@ -115,8 +106,12 @@ int filter
 
   /*** First filtering step. ***/
   // W := alpha*(A-cI) V + beta W = [alpha A V + beta W] - alpha c V
-  applyA( alpha, V_view, beta, W_view );
-  Axpy( -alpha*c, V_view, W_view );
+  {
+      auto VBlock = V( ALL, IR(start,start+width) );
+      auto WBlock = W( ALL, IR(start,start+width) );
+      applyA( alpha, VBlock, beta, WBlock );
+      Axpy( -alpha*c, VBlock, WBlock );
+  }
 
 #ifdef SEARCH_NAN
   //////////////////////////////////////////////////////////
@@ -160,19 +155,19 @@ int filter
       alpha = 2*sigma_new / e;
       beta  = -sigma*sigma_new;
 
-      View(V_view, V, 0, start, N, width);
-      View(W_view, W, 0, start, N, width);
+      auto VBlock = V( ALL, IR(start,start+width) );
+      auto WBlock = W( ALL, IR(start,start+width) );
 
       // Apply translated matrix (double buffering for performance).
       if (i%2 == 0)
       {
-          applyA( alpha, W_view, beta, V_view );
-          Axpy( -alpha*c, W_view, V_view ); 
+          applyA( alpha, WBlock, beta, VBlock );
+          Axpy( -alpha*c, WBlock, VBlock ); 
       }
       else
       {
-          applyA( alpha, V_view, beta, W_view );
-          Axpy( -alpha*c, V_view, W_view );
+          applyA( alpha, VBlock, beta, WBlock );
+          Axpy( -alpha*c, VBlock, WBlock );
       }
 
       total_vcts_filtered += width;
@@ -189,9 +184,9 @@ int filter
 
           if (i%2 == 0 && local_vcts_filtered > 0)
           {
-              View(V_view, V, 0, start, N, local_vcts_filtered);
-              View(W_view, W, 0, start, N, local_vcts_filtered);
-              W_view = V_view;
+              auto VBlockFilt = V( ALL, IR(start,start+local_vcts_filtered) );
+              auto WBlockFilt = W( ALL, IR(start,start+local_vcts_filtered) );
+              WBlockFilt = VBlockFilt;
           }
 
           start += local_vcts_filtered;
@@ -202,9 +197,9 @@ int filter
   // If the filltered vectors are not in W (output), copy them there.
   if (degmax%2 == 0)
   {
-      View(V_view, V, 0, start, N, width);
-      View(W_view, W, 0, start, N, width);
-      W_view = V_view;
+      auto VBlock = V( ALL, IR(start,start+width) );
+      auto WBlock = W( ALL, IR(start,start+width) );
+      WBlock = VBlock;
   }
 
   return total_vcts_filtered;

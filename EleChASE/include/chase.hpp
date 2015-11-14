@@ -199,13 +199,8 @@ void chase
     [&]( F alpha, const ElementalMatrix<F>& X, F beta, ElementalMatrix<F>& Y )
     { Hemm( LEFT, uplo, alpha, H, X, beta, Y ); };
 
-  DistMatrix<F> V_view(grid), W_view(grid);
-  DistMatrix<Real,VR,STAR> Lambda_view(grid);
-
   DistMatrix<F> H_reduced(grid), V_reduced(grid);
   DistMatrix<Real,VR,STAR> Lambda_reduced(grid);
-
-  DistMatrix<F,STAR,STAR> tmp_FSS(N, 1, grid);
 
   int converged, converged_old;  // Number of converged eigenpairs.
   int block = nev + nex;         // Decreases as the vectors are locked.
@@ -257,16 +252,16 @@ void chase
 
   /*** Lanczos. ***/
   set_time(BGN_LANCZOS, mpi::Time());
-  View(W_view, W, 0, 0, N, 1);
-  MakeUniform(W_view);
+  auto w0 = W( ALL, IR(0) );
+  MakeUniform( w0 );
 
   if (mode == ELECHFSI_APPROX)
     lanczos
-    ( applyH, W_view, get_lanczos(),get_lanczos(),
+    ( applyH, w0, get_lanczos(),get_lanczos(),
       block, &upper, NULL, NULL );
   if (mode == ELECHFSI_RANDOM)
     lanczos 
-    ( applyH, W_view, get_lanczos(), 2*block/*4*get_lanczos()*/,
+    ( applyH, w0, get_lanczos(), 2*block/*4*get_lanczos()*/,
       block, &upper, &lower, &lambda);
 
   mpi::Broadcast( upper, 0, comm );
@@ -283,19 +278,19 @@ void chase
   iteration = 0;
   while (converged < nev && iteration < get_maxiter())
   {
-      View(Lambda_view, Lambda, converged, 0, block, 1);
+      auto LambdaBlock = Lambda( IR(converged,converged+block), ALL );
 
       // Set the parameters lambda and lower for the filter.
       if (iteration != 0 || mode != ELECHFSI_RANDOM)
       {
           tmp = *std::min_element
-                ( Lambda_view.Buffer(),
-                  Lambda_view.Buffer()+Lambda_view.LocalHeight() );
+                ( LambdaBlock.Buffer(),
+                  LambdaBlock.Buffer()+LambdaBlock.LocalHeight() );
           lambda = mpi::AllReduce( tmp, mpi::MIN, comm );
 
           tmp = *std::max_element
-                ( Lambda_view.Buffer(),
-                  Lambda_view.Buffer()+Lambda_view.LocalHeight() );
+                ( LambdaBlock.Buffer(),
+                  LambdaBlock.Buffer()+LambdaBlock.LocalHeight() );
           lower = mpi::AllReduce( tmp, mpi::MAX, comm );
       }
 
@@ -335,15 +330,15 @@ void chase
 
       /*** Reduce problem: construct, solve, apply back transformation. ***/
       set_time(BGN_REDUCED, mpi::Time());
-      View( V_view, V,  0, converged, N, block );
-      View( W_view, W,  0, converged, N, block );
-      applyH( F(1), W_view, F(0), V_view );
+      auto VBlock = V( ALL, IR(converged,converged+block) );
+      auto WBlock = W( ALL, IR(converged,converged+block) );
+      applyH( F(1), WBlock, F(0), VBlock );
 
-      H_reduced.AlignWith(W_view);
+      H_reduced.AlignWith(WBlock);
       H_reduced.Resize(block, block);
-      Gemm(ADJOINT, NORMAL, F(1), W_view, V_view, F(0), H_reduced);
+      Gemm(ADJOINT, NORMAL, F(1), WBlock, VBlock, F(0), H_reduced);
 
-      HermitianEig(uplo, H_reduced, Lambda_reduced, V_reduced, ASCENDING);
+      HermitianEig( uplo, H_reduced, Lambda_reduced, V_reduced, ASCENDING );
 
       /* Single optimization. Sort the permutation. (The eigenpairs are sorted.) */
       std::sort(pi+converged, pi+nev);
@@ -351,41 +346,37 @@ void chase
           pi_inv[pi[j]] = j;
 
       // Back transformation.
-      Lambda_view = Lambda_reduced;
-      H_reduced.AlignWith(W_view);
+      LambdaBlock = Lambda_reduced;
+      H_reduced.AlignWith(WBlock);
       H_reduced = V_reduced;
-      Gemm(NORMAL, NORMAL, F(1), W_view, H_reduced, F(0), V_view);
+      Gemm( NORMAL, NORMAL, F(1), WBlock, H_reduced, F(0), VBlock );
 
       set_time(END_REDUCED, get_time(END_REDUCED) + mpi::Time() - get_time(BGN_REDUCED));
 
       /** Compute residuals. ***/
       // Copy non converged from V to W.
       set_time(BGN_CONV, mpi::Time());
-      View(V_view, V,  0, converged, N, block);
-      View(W_view, W,  0, converged, N, block);
-      W_view = V_view;
+      WBlock = VBlock;
 
-      // Compute W_view = HW-WLambda (residuals) and...
-      View(V_view, V,  0, converged, N, block-nex);
-      View(W_view, W,  0, converged, N, block-nex);
-      View(Lambda_view, Lambda, converged, 0, block-nex, 1);
+      // Compute WBlockLeft = HW-WLambda (residuals) and...
+      auto VBlockLeft = V( ALL, IR(converged,converged+block-nex) );
+      auto WBlockLeft = W( ALL, IR(converged,converged+block-nex) );
+      auto LambdaBlockLeft = Lambda( IR(converged,converged+block-nex), ALL );
 
-      DiagonalScale(RIGHT, NORMAL, Lambda_view, W_view);
-      applyH( F(1), V_view, F(-1), W_view );
+      DiagonalScale( RIGHT, NORMAL, LambdaBlockLeft, WBlockLeft );
+      applyH( F(1), VBlockLeft, F(-1), WBlockLeft );
       for (int i = converged; i < nev; ++i)
       {
-          View(V_view, V, 0, i, N, 1);
-          View(W_view, W, 0, i, N, 1);
-
+          auto wi = W( ALL, IR(i) );
           /*
-          tmp = Lambda_view.Get(i-converged, 0);
-          norm_2 = Nrm2(W_view);
+          tmp = LambdaBlockLeft.Get(i-converged, 0);
+          norm_2 = Nrm2(wi);
           resid[i] = norm_2/((upper+Abs(tmp)));
           */
 
           // || H x - lambda x || / ( max( ||H||, |lambda| ) )
           // norm_2 <- || H x - lambda x ||
-          norm_2 = Nrm2(W_view);
+          norm_2 = FrobeniusNorm( wi );
           resid[i] = norm_2 / ( max( norm_H, Real(1) ) );
       }
 
@@ -468,9 +459,9 @@ void chase
       // If there are changes, copy the views.
       if(converged-converged_old)
       {
-          View(V_view, V, 0, converged_old, N, converged-converged_old);
-          View(W_view, W, 0, converged_old, N, converged-converged_old);
-          W_view = V_view;
+          auto VNewConv = V( ALL, IR(converged_old,converged) );
+          auto WNewConv = W( ALL, IR(converged_old,converged) );
+          WNewConv = VNewConv;
       }
 
       set_time(END_CONV, get_time(END_CONV) + mpi::Time() - get_time(BGN_CONV));
