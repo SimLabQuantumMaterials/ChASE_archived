@@ -283,15 +283,8 @@ void chase
       // Set the parameters lambda and lower for the filter.
       if (iteration != 0 || mode != ELECHFSI_RANDOM)
       {
-          tmp = *std::min_element
-                ( LambdaBlock.Buffer(),
-                  LambdaBlock.Buffer()+LambdaBlock.LocalHeight() );
-          lambda = mpi::AllReduce( tmp, mpi::MIN, comm );
-
-          tmp = *std::max_element
-                ( LambdaBlock.Buffer(),
-                  LambdaBlock.Buffer()+LambdaBlock.LocalHeight() );
-          lower = mpi::AllReduce( tmp, mpi::MAX, comm );
+          lambda = Min( LambdaBlock );
+          lower = Max( LambdaBlock );
       }
 
       /*** Chebyshev filter. ***/
