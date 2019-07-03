@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Cloning ChASE source code &mdash; ChASE 0.9.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/ChASE_Logo_Favicon_RGB.png"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="ChASE 0.9.1 documentation" href="../index.html"/>
+        <link rel="up" title="Quick Start" href="../quick-start.html"/>
+        <link rel="next" title="General Installation on a Cluster" href="../installation.html"/>
+        <link rel="prev" title="Installing dependencies on Mac OS" href="macos.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/ChASE_Logo_RGB.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.9rc
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">USER DOCUMENTATION:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../quick-start.html">Quick Start</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../quick-start.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../quick-start.html#quick-installation-and-execution">Quick Installation and Execution</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Cloning ChASE source code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-the-chase-library">Building the ChASE library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simple-driver">Simple Driver</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">General Installation on a Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../parameters.html">Parameters and Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference.html">References and Contributors</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SOURCE DOCUMENTATION:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../parallel.html">Parallel implementations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithm.html">General algorithm</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">ChASE</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+        <li><a href="../quick-start.html">Quick Start</a> &raquo;</li>
+      
+    <li>Cloning ChASE source code</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        
+          <a href="../_sources/quick-start/quick-install.rst.txt" rel="nofollow"> View page source</a>
+        
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="cloning-chase-source-code">
+<h1>Cloning ChASE source code<a class="headerlink" href="#cloning-chase-source-code" title="Permalink to this headline">¶</a></h1>
+<p>ChASE is an open source project and it is available on <a class="reference external" href="https://github.com/">GitHub</a>. In order to download the source code of ChASE
+one needs to have the <a class="reference external" href="http://git-scm.com/">git</a> utility installed.
+To clone a local copy of the ChASE repository execute the command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">SimLabQuantumMaterials</span><span class="o">/</span><span class="n">ChASE</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-the-chase-library">
+<span id="build-label"></span><h1>Building the ChASE library<a class="headerlink" href="#building-the-chase-library" title="Permalink to this headline">¶</a></h1>
+<p>On a Linux system with MPI and CMake installed in the standard
+locations, ChASE can be build by executing in order the
+following commands (after having cloned the repository):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">ChASE</span><span class="o">/</span>
+<span class="n">mkdir</span> <span class="n">build</span>
+<span class="n">cd</span> <span class="n">build</span><span class="o">/</span>
+<span class="n">cmake</span> <span class="o">..</span>
+<span class="n">make</span>
+</pre></div>
+</div>
+<p>CMake will auto-detect the dependencies and select the default
+installed modules. In order to select a specific module installation,
+one can manually specify several build options,
+especially when multiple versions of libraries or several different
+compilers are available on the system. For instance, any <code class="docutils literal notranslate"><span class="pre">C++</span></code>, <code class="docutils literal notranslate"><span class="pre">C</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">Fortran</span></code> compiler can be selected by setting the
+<code class="docutils literal notranslate"><span class="pre">CMAKE_CXX_COMPILER</span></code>, <code class="docutils literal notranslate"><span class="pre">CMAKE_C_COMPILER</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">CMAKE_Fortran_COMPILER</span></code> variables, respectively. The following
+provide an illustration of such setting.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">D</span> <span class="n">CMAKE_CXX_COMPILER</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">g</span><span class="o">++</span> \
+<span class="o">-</span><span class="n">D</span> <span class="n">CMAKE_C_COMPILER</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">gcc</span>   \
+<span class="o">-</span><span class="n">D</span> <span class="n">CMAKE_Fortran_COMPILER</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">gfortran</span>
+</pre></div>
+</div>
+<p>Analogously, it may be necessary to manually specify the paths to the
+MPI implementation by, for example, setting the following variables.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">D</span> <span class="n">MPI_CXX_COMPILER</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">mpicxx</span> \
+<span class="o">-</span><span class="n">D</span> <span class="n">MPI_C_COMPILER</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">mpicc</span> \
+<span class="o">-</span><span class="n">D</span> <span class="n">MPI_Fortran_COMPILER</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">mpif90</span>
+</pre></div>
+</div>
+<p>For instance, installing ChASE on an Apple computer with gcc and
+Accelerate, one could execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">D</span> <span class="n">CMAKE_CXX_COMPILER</span><span class="o">=</span><span class="n">g</span><span class="o">++</span> <span class="o">-</span><span class="n">D</span> <span class="n">CMAKE_C_COMPILER</span><span class="o">=</span><span class="n">gcc</span> <span class="o">-</span><span class="n">D</span> <span class="n">CMAKE_Fortran_COMPILER</span><span class="o">=</span><span class="n">gfortran</span> <span class="o">..</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="simple-driver">
+<h1>Simple Driver<a class="headerlink" href="#simple-driver" title="Permalink to this headline">¶</a></h1>
+<p>For a quick test and usage of the library, we provide a ready-to-use
+simple driver.  In order to build the simple driver together with ChASE
+the sequence of building commands is slightly modified as below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">ChASE</span><span class="o">/</span>
+<span class="n">mkdir</span> <span class="n">build</span>
+<span class="n">cd</span> <span class="n">build</span><span class="o">/</span>
+<span class="n">cmake</span> <span class="o">..</span> <span class="o">-</span><span class="n">DBUILD_SIMPLEDRIVER</span><span class="o">=</span><span class="n">ON</span>
+<span class="n">make</span>
+</pre></div>
+</div>
+<p>One can call the simple driver without any argument. In this case a
+Clement matrix is generated and default values are used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">simple_driver</span><span class="o">/</span><span class="n">simple_driver</span>
+</pre></div>
+</div>
+<p>One could also specify a subset or all arguments. The minimal
+arguments that need to be provided are the input matrix and the size
+of such matrix:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">simple_driver</span><span class="o">/</span><span class="n">simple_driver</span> <span class="o">--</span><span class="n">n</span> <span class="o">&lt;</span><span class="n">MatrixSize</span><span class="o">&gt;</span> <span class="o">--</span><span class="nb">input</span> <span class="o">&lt;</span><span class="n">YourOwnFolder</span><span class="o">/</span><span class="n">YourMatrixToSolve</span><span class="o">.</span><span class="n">bin</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>To run the <cite>simple_driver</cite> with MPI, start the command with the mpi launcher of your choice, e.g. <cite>mpirun</cite> or <cite>srun</cite>.</p>
+<p>All additional arguments can be listed with -h:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">simple_driver</span><span class="o">/</span><span class="n">simple_driver</span> <span class="o">-</span><span class="n">h</span>
+</pre></div>
+</div>
+<p>For sake of completeness we provide a complete list below.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="72%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter (default value)</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>-h [ –help ]</td>
+<td>Shows the full list of parameters</td>
+</tr>
+<tr class="row-odd"><td>–n arg (=1001)</td>
+<td>Size of the Input Matrix</td>
+</tr>
+<tr class="row-even"><td>–double arg (=1)</td>
+<td>Are matrix entries of type double, false indicates type single</td>
+</tr>
+<tr class="row-odd"><td>–complex arg (=1)</td>
+<td>Is matrix complex valued, false indicates a real matrix</td>
+</tr>
+<tr class="row-even"><td>–nev arg (=100)</td>
+<td>Wanted Number of Eigenpairs</td>
+</tr>
+<tr class="row-odd"><td>–nex arg (=25)</td>
+<td>Extra Search Dimensions</td>
+</tr>
+<tr class="row-even"><td>–deg arg (=20)</td>
+<td>Initial filtering degree</td>
+</tr>
+<tr class="row-odd"><td>–bgn arg (=2)</td>
+<td>Start index of matrix sequence (if any)</td>
+</tr>
+<tr class="row-even"><td>–end arg (=2)</td>
+<td>End index of matrix sequence (if any)</td>
+</tr>
+<tr class="row-odd"><td>–tol arg (=1e-10)</td>
+<td>Minimum tolerance required to declare eigenpairs converged</td>
+</tr>
+<tr class="row-even"><td>–input arg</td>
+<td>Path to the input matrix/matrices</td>
+</tr>
+<tr class="row-odd"><td>–output arg (=eig.txt)</td>
+<td>Path to the write the eigenvalues</td>
+</tr>
+<tr class="row-even"><td>–mode arg (=R)</td>
+<td>Valid values are <code class="docutils literal notranslate"><span class="pre">R</span></code> (Random) or <code class="docutils literal notranslate"><span class="pre">A</span></code> (Approximate)</td>
+</tr>
+<tr class="row-odd"><td>–opt arg (=N)</td>
+<td>Valid values are Optimi <code class="docutils literal notranslate"><span class="pre">S</span></code> e, or do <code class="docutils literal notranslate"><span class="pre">N</span></code> ot optimise degree</td>
+</tr>
+<tr class="row-even"><td>–path_eigp arg</td>
+<td>Path to approximate solutions, only required when
+mode is <code class="docutils literal notranslate"><span class="pre">A</span></code> pproximate, otherwise not used</td>
+</tr>
+<tr class="row-odd"><td>–perturb arg (=0)</td>
+<td>Perturbation of eigenvalues used for
+second run. Only used with single matrix
+to test effectiveness of <code class="docutils literal notranslate"><span class="pre">A</span></code> pproximate mode</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../installation.html" class="btn btn-neutral float-right" title="General Installation on a Cluster" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="macos.html" class="btn btn-neutral" title="Installing dependencies on Mac OS" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, SimLab Quantum Materials.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.9.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

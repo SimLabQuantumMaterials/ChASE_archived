@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ChASE: an Iterative Solver for Dense Eigenproblems &mdash; ChASE 0.9.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/ChASE_Logo_Favicon_RGB.png"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="ChASE 0.9.1 documentation" href="#"/>
+        <link rel="next" title="Quick Start" href="quick-start.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#">
+          
+
+          
+            
+            <img src="_static/ChASE_Logo_RGB.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.9rc
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">USER DOCUMENTATION:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quick-start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">General Installation on a Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameters.html">Parameters and Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">References and Contributors</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SOURCE DOCUMENTATION:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel implementations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm.html">General algorithm</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="#">ChASE</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="#">Docs</a> &raquo;</li>
+      
+    <li>ChASE: an Iterative Solver for Dense Eigenproblems</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        
+          <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+        
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <img alt="_images/ChASE_Logo_RGB.png" src="_images/ChASE_Logo_RGB.png" />
+<div class="section" id="chase-an-iterative-solver-for-dense-eigenproblems">
+<h1>ChASE: an Iterative Solver for Dense Eigenproblems<a class="headerlink" href="#chase-an-iterative-solver-for-dense-eigenproblems" title="Permalink to this headline">¶</a></h1>
+<p>The <strong>Ch</strong>ebyshev <strong>A</strong>ccelerated <strong>S</strong>ubspace <strong>E</strong>igensolver
+(ChASE) is a modern and scalable library to solve dense Hermitian (Symmetric)
+algebraic eigenvalue problems of the form</p>
+<div class="math notranslate nohighlight">
+\[A \hat{x} = \lambda \hat{x} \quad \textrm{with} \quad A^\dagger=A \in
+\mathbb{C}^{n\times n}\ \ (A^T=A \in \mathbb{R}^{n\times n}),\]</div>
+<p>where <span class="math notranslate nohighlight">\(\hat{x} \in \mathbb{C}^{n}\backslash \{0\}\)</span> and
+<span class="math notranslate nohighlight">\(\lambda \in \mathbb{R}\)</span> are the eigenvector and the eigenvalue
+of <span class="math notranslate nohighlight">\(A\)</span>, respectively.</p>
+<div class="section" id="use-case-and-features">
+<h2>Use Case and Features<a class="headerlink" href="#use-case-and-features" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><strong>Real and Complex:</strong> ChASE is templated for real and complex numbers. So it can
+be used to solve <em>real symmetric</em> eigenproblems as well as <em>complex
+Hermitian</em> ones.</li>
+<li><strong>Eigespectrum:</strong> ChASE algorithm is designed to solve for the
+<em>extremal portion</em> of the eigenspectrum (i.e., <span class="math notranslate nohighlight">\(\{\lambda_1,
+\dots ,\lambda_\textsf{nev}\}\)</span>). By default it computes the
+lowest portion of the spectrum but it can compute as well the
+largest portion by solving for <span class="math notranslate nohighlight">\(-A\)</span>. The library is
+particularly efficient when no more than 20% of the extremal
+portion of the eigenspectrum is sought after. For larger
+fractions the subspace iteration algorithm may struggle to be
+competitive. Converge could become an issue for fractions close
+to or larger than 50%.</li>
+<li><strong>Type of Problem:</strong> ChASE can currently handle only standard
+eigenvalue problems. Generalized eigenvalue problems of the form
+<span class="math notranslate nohighlight">\(A\hat{x} = \lambda B \hat{x}\)</span>, with <span class="math notranslate nohighlight">\(B\)</span> s.p.d., can
+be solved after factorizing <span class="math notranslate nohighlight">\(B = L L^T\)</span> and transforming
+the problem into standard form <span class="math notranslate nohighlight">\(A = L^{-1} A L^{-T}\)</span>.</li>
+<li><strong>Sequences:</strong> ChASE is particularly efficient when dealing with
+<em>sequences of eigenvalue problems</em>, where the eigenvectors
+solving for one problem can be use as input to accelerate the
+solution of the next one.</li>
+<li><strong>Vectors input:</strong> Since it is based on subspace iteration, ChASE
+can receive as input a matrix of vector <span class="math notranslate nohighlight">\(\hat{V}\)</span> equal to
+the number of desired eigenvalues. ChASE can experience
+substantial speed-ups when <span class="math notranslate nohighlight">\(\hat{V}\)</span> contains some
+information about the sought after eigenvectors.</li>
+<li><strong>Degree optimization:</strong> For a fixed accuracy level, ChASE can
+optimize the degree of the Chebyshev polynomial filter so as to
+minimize the number of FLOPs necessary to reach convergence.</li>
+<li><strong>Precision:</strong> ChASE is also templated to work in <em>Single
+Precision</em> (SP) or <em>Double Precision</em> (DP).</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="versions-of-the-library">
+<h2>Versions of the library<a class="headerlink" href="#versions-of-the-library" title="Permalink to this headline">¶</a></h2>
+<p>The library comes in two main versions which are labelled ChASE-MPI
+and ChASE-Elemental. ChASE-MPI is the default version of the library
+and can be installed with the minimum amount of dependencies (BLAS,
+LAPACK, and MPI). ChASE-Elemental requires the additional installation
+of the <a class="reference external" href="http://libelemental.org/">Elemental</a> library.</p>
+<div class="section" id="chase-mpi">
+<h3>ChASE-MPI<a class="headerlink" href="#chase-mpi" title="Permalink to this headline">¶</a></h3>
+<p>ChASE-MPI supports different configurations depending on the available
+hardware resources.</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>Shared memory build:</strong> This is the simplest configuration and
+should be exclusively selected when ChASE is used on only one
+computing node or on a single CPU. The simplicity of this
+configuration resides in the way the Matrix-Matrix kernel is
+implemented with respect to the full MPI build.</p>
+</li>
+<li><p class="first"><strong>MPI+Threads build:</strong> On multi-core homogeneous CPU clusters ChASE
+is bext used in its pure MPI build. In this configuration, ChASE
+is typically used with one MPI rank per computing node and as
+many threads as number of available cores per node.</p>
+</li>
+<li><p class="first"><strong>GPU build:</strong> ChASE-MPI can be configured to take advantage of
+graphics card on heterogeneous computing clusters. Currently only
+one GPU card per node is supported. Support for multi-GPUs is
+currently under development and expected in the near future.</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>CuBLAS:</strong> Only the Chebyshev filter, which is the most
+computational intensive and scalable part of the
+eigensolver, is off-loaded to the GPU cards. The rest is
+computed on the CPU and the QR factorization is done
+redundantly on each computing node.</li>
+<li><strong>MAGMA:</strong> On some computing clusters where is available,
+the MAGMA library can be used to perform the QR
+factorization redundantly on the GPU. Typically our tests
+showed that performance does not improve and sometimes even
+deteriorates. This version is still experimental and it is
+provided only upon request.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="chase-elemental">
+<h3>ChASE-Elemental<a class="headerlink" href="#chase-elemental" title="Permalink to this headline">¶</a></h3>
+<p>ChASE-Elemental takes advantage of the <a class="reference external" href="http://libelemental.org/">Elemental</a> library routines to execute its tasks in
+parallel. The data is distributed using Elemental distribution
+classes. ChASE-Elemental is available in a <strong>pure MPI build</strong> and,
+while it is slightly less performant than ChASE-MPI, it ensure a
+better scalability since, contrary to ChASE-MPI, the QR factorization
+is also executed in parallel. For stability reason, ChASE uses
+Elemental version 0.84.</p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">USER DOCUMENTATION:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quick-start.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quick-start.html#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick-start.html#quick-installation-and-execution">Quick Installation and Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">General Installation on a Cluster</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#library-dependencies">Library Dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parameters.html">Parameters and Configurations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parameters.html#general-parameters">General Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters.html#chebyshev-filter">Chebyshev Filter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">References and Contributors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#main-developers">Main developers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#current-contributors">Current Contributors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#past-contributors">Past Contributors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#how-to-reference-the-code">How to Reference the Code</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">SOURCE DOCUMENTATION:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel implementations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#chase-mpi">ChASE MPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#chase-elemental">ChASE Elemental</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#chase-hpx">ChASE HPX</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm.html">General algorithm</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lanczos.html">The modified Lanczos for bound estimates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="QR-RR.html">Orthogonalization and Rayleigh-Ritz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filter.html">The Chebyshev filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimizations.html">Algorithm optimizations</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="licenses-and-copyright">
+<h3>Licenses and Copyright<a class="headerlink" href="#licenses-and-copyright" title="Permalink to this headline">¶</a></h3>
+<p><em>ChASE is licensed under the 3-clause BSD License (BSD License 2.0)</em></p>
+<p>Copyright (c) 2015-2018, Simulation Laboratory Quantum Materials,
+Forschungszentrum Juelich GmbH, Germany</p>
+<p>All rights reserved.</p>
+<p>Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.</p>
+</li>
+<li><p class="first">Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.</p>
+</li>
+<li><p class="first">Neither the name of</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line">the Simulation  Laboratory Quantum Materials, Forschungszentrum Juelich GmbH, Germany</div>
+<div class="line">the Aachen Institute for Advanced Study in Computational Engineering Science, RWTH Aachen University, Germany</div>
+</div>
+</div></blockquote>
+<p>nor the names of its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.</p>
+</li>
+</ul>
+</div></blockquote>
+<p>NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY’S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS”
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="quick-start.html" class="btn btn-neutral float-right" title="Quick Start" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, SimLab Quantum Materials.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.9.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

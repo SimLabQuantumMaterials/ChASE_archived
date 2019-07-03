@@ -1,0 +1,138 @@
+*********************************
+General Installation on a Cluster
+*********************************
+
+..
+  todo:: General introduction (SEBASTIAN)
+
+   * Homogeneous cluster
+   * Heterogeneous cluster
+   * ...
+
+.. 
+  Configuring CMake
+  =================
+
+..
+  todo:: Detailed instructions (SEBASTIAN + JAN)
+
+   * How to customize the Makefile
+   * Options
+   * etc...
+
+
+
+Library Dependencies
+====================
+
+..
+  todo:: Depending on the parallel implementation (SEBASTIAN + JAN)
+
+   * Installing Elemental for ChASE-Elemental (just a brief intro)
+   * LAPACK+BLAS (e.g. MKL library)
+   * CuBLAS
+   * MAGMA
+   * ...
+
+
+In order to install the ChASE library on a general purpose computing cluster,
+one has to install or load the necessary dependencies. For the standard MPI
+version of the library these dependencies are the following:
+
+* a ``C++`` Compiler;
+* a Message Passing Interface (MPI) implementation;
+* CMake (version 3.8 or higher);
+* a Basic Linear Algebra Subprograms (BLAS) and Linear Algebra PACKage (LAPACK) library;
+* a CUDA compiler (GPU version only);
+* the Elemental library (ChASE + Elemental only);
+* the Boost library (only if you want to use the simple_driver)
+
+CMake builds ChASE by automatically detecting the location of the
+installed dependency. On most supercomputers it is sufficient to just
+load the corresponding module, e.g. ``module load <modulename>``. If
+you have loaded/installed multiple versions for the libraries and the
+compiler listed above, then you have to indicate to CMake specific
+paths so that it may choose the correct package. For more details, see
+:ref:`build-label`.
+
+Example installation
+--------------------
+
+The following snippet shows how to install ChASE on the JURECA cluster
+(the main general purpose cluster at the Juelich Supercomputing Centre):
+
+.. code-block:: console
+
+  git clone https://github.com/SimLabQuantumMaterials/ChASE.git
+  cd ChASE/
+  mkdir build
+  cd build/
+  ml intel-para CMake
+  cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc
+  make
+
+In case you want to compile ChASE with GPU support, you have to load
+the CUDA compiler, which will use CuBLAS as well. On JURECA this can
+be done by loading the module CUDA in addition to the other
+modules. Make sure, that you are using a computer/node with a GPU
+(e.g. check with `nvidia-smi`) and make sure that you have the CUDA
+compiler, e.g. check `which nvcc` or if you are using a module system
+look at `module list`.  The following code will build ChASE with Cuda
+support on JURECA:
+
+.. code-block:: console
+
+  git clone https://github.com/SimLabQuantumMaterials/ChASE.git
+  cd ChASE/
+  mkdir build
+  cd build/
+  ml GCC/8.2.0  ParaStationMPI/5.2.1-1 imkl CUDA CMake Boost
+  cmake ..
+  make
+
+
+..
+  code-block:: console
+
+  git clone --recursive ssh://git@gitlab.version.fz-juelich.de:10022/SLai/ChASE-Drivers.git
+  cd ChASE-Drivers
+  mkdir build
+  cd build
+  ml intel-para CMake Boost
+  cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc
+  #make
+  cd ChASE-MPI/
+  make
+  ./blas_driver --n 9273 --mode 'R' --opt S --double true --legacy=true --name nacl --path_in /homeb/slai/slai00/MATrix/NaCl/size9k/bin/ --nev 256 --bgn 1 --end 16 --sequence=true --nex 51
+
+To install the simple Driver on JURECA you have to specify an
+additional option to the cmake build process
+`-DBUILD_SIMPLEDRIVER=ON`. You can then call the `simple_driver`
+without an argument to generate a random matrix and call ChASE, or
+specify input arguments. The following code will build ChASE with the
+simple Driver on JURECA:
+
+.. code-block:: console
+
+  git clone https://github.com/SimLabQuantumMaterials/ChASE.git
+  cd ChASE/
+  mkdir build
+  cd build/
+  ml intel-para CMake Boost
+  cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc -DBUILD_SIMPLEDRIVER=ON
+  make
+  ./simple_driver/simple_driver
+  or
+  ./simple_driver/simple_driver --n <MatrixSize> --input <YourOwnFolder/YourMatrixToSolve.bin>
+
+To run the ChASE through the `simple_driver` in parallel, use a MPI
+launcher. For example on JURECA (or any other cluster using a SLURM
+job scheduler)
+
+.. code-block:: console
+
+  srun -n 2 ./simple_driver/simple_driver
+
+where `n` is the number of compute nodes.
+
+

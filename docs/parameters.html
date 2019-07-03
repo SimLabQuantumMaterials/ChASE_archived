@@ -1,0 +1,428 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Parameters and Configurations &mdash; ChASE 0.9.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/ChASE_Logo_Favicon_RGB.png"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="ChASE 0.9.1 documentation" href="index.html"/>
+        <link rel="next" title="References and Contributors" href="reference.html"/>
+        <link rel="prev" title="General Installation on a Cluster" href="installation.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/ChASE_Logo_RGB.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.9rc
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">USER DOCUMENTATION:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quick-start.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">General Installation on a Cluster</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Parameters and Configurations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#general-parameters">General Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#chebyshev-filter">Chebyshev Filter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">References and Contributors</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SOURCE DOCUMENTATION:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel implementations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm.html">General algorithm</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">ChASE</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Parameters and Configurations</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        
+          <a href="_sources/parameters.rst.txt" rel="nofollow"> View page source</a>
+        
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="parameters-and-configurations">
+<h1>Parameters and Configurations<a class="headerlink" href="#parameters-and-configurations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general-parameters">
+<h2>General Parameters<a class="headerlink" href="#general-parameters" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="colwidths-given docutils" id="id1">
+<colgroup>
+<col width="15%" />
+<col width="33%" />
+<col width="33%" />
+<col width="19%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+<th class="head">Suggested value</th>
+<th class="head">Default value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">N</span></code></td>
+<td>Rank of the matrix
+<span class="math notranslate nohighlight">\(A\)</span>.</td>
+<td>&#160;</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td><code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">nev</span></code></td>
+<td>Number of desired
+eigenpairs</td>
+<td>No more than 20%
+of the total number of
+eigenvalues
+(or rank of <span class="math notranslate nohighlight">\(A\)</span>)</td>
+<td>N/A</td>
+</tr>
+<tr class="row-even"><td><code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">nex</span></code></td>
+<td>Search space increment
+such that the overall
+size of the search space
+is <code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">nev</span></code> +
+<code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">nex</span></code>.</td>
+<td>In most cases 20% of
+the value of
+<code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">nev</span></code>. Best
+case scenario for
+optimal convergence
+is when there is a
+large
+spectrum gap between
+<code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">nev</span></code> and
+<code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">nex</span></code>.</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td><code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">approx</span></code></td>
+<td>An optional flag
+indicating whether the
+user provides ChASE with
+approximate eigenvectors
+or uses ChASE in
+isolation as a
+traditional black-box
+solver</td>
+<td>When <code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">approx</span></code>
+is set to true, ChASE
+expects the arrays
+<code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">V</span></code> and
+<code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">ritzv</span></code> to hold
+approximate vectors and
+values, respectively</td>
+<td><code class="docutils literal notranslate"><span class="pre">false</span></code>
+(black-box solver)</td>
+</tr>
+<tr class="row-even"><td><code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">tol</span></code></td>
+<td>An optional parameter
+indicating the minimal
+value for the residual
+such that the
+corresponding eigenpair
+is declared converged.</td>
+<td>As a rule of thumb a
+minimum value of
+<code class="docutils literal notranslate"><span class="pre">1e-08</span></code> and <code class="docutils literal notranslate"><span class="pre">1e-04</span></code>
+are suggested for DP
+and SP,
+respectively.</td>
+<td><code class="docutils literal notranslate"><span class="pre">1e-10</span></code> in
+DP. <code class="docutils literal notranslate"><span class="pre">1e-05</span></code>
+in SP.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">maxIter</span></code></td>
+<td>An optional parameter set
+as to avoid that ChASE
+internal while loop runs
+unchecked in the rare
+cases where convergence
+of the desired eigenpairs
+cannot be secured. Once
+reached the
+<code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">maxIter</span></code>, ChASE
+stops execution and
+returns.</td>
+<td>Typically ChASE does not
+need more than 10
+iterations even in the
+most complex cases and
+averages 4-5 iterations
+to convergence.</td>
+<td><code class="docutils literal notranslate"><span class="pre">25</span></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="chebyshev-filter">
+<h2>Chebyshev Filter<a class="headerlink" href="#chebyshev-filter" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="colwidths-given docutils" id="chebyshev-parameters">
+<colgroup>
+<col width="15%" />
+<col width="33%" />
+<col width="33%" />
+<col width="19%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Parameter</th>
+<th class="head">Description</th>
+<th class="head">Suggested value</th>
+<th class="head">Default value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">deg</span></code></td>
+<td>Polynomial degree for the
+Chebyshev filter. When
+the value of
+<code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">optim</span></code> = true
+, this is the <cite>initial</cite>
+polynomial degree used
+in only the first
+subspace iteration.
+Otherwise the same value
+<code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">deg</span></code> is used
+for every vector
+for each filter call.</td>
+<td>When
+<code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">optim</span></code> = true
+it is advisable to set
+to a value not larger
+than <code class="docutils literal notranslate"><span class="pre">10</span></code>. If
+<code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">optim</span></code> = false
+then it is advised to
+select a value not
+smaller than <code class="docutils literal notranslate"><span class="pre">15</span></code>
+but not larger than
+<code class="docutils literal notranslate"><span class="pre">30</span></code>.</td>
+<td><code class="docutils literal notranslate"><span class="pre">20</span></code> in DP,
+<code class="docutils literal notranslate"><span class="pre">10</span></code> in SP.</td>
+</tr>
+<tr class="row-odd"><td><code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">optim</span></code></td>
+<td>An optional flag
+indicating that the
+filter uses a vector of
+degrees optimized for
+each single filtered
+vector.</td>
+<td>Despite the fact that
+the default value is
+set to <code class="docutils literal notranslate"><span class="pre">false</span></code>, it is
+advisable to set this
+flag to <code class="docutils literal notranslate"><span class="pre">true</span></code> often
+as possible in order to
+avoid wasting extra
+FLOPs.</td>
+<td><code class="docutils literal notranslate"><span class="pre">false</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">degExtra</span></code></td>
+<td>A small value used only
+in combination with
+<code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">optim</span></code> = true.</td>
+<td>Usually a small number
+never larger than <code class="docutils literal notranslate"><span class="pre">5</span></code>.
+Apart for rare cases,
+avoind changing the
+default value.</td>
+<td><code class="docutils literal notranslate"><span class="pre">2</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="xref cpp cpp-var docutils literal notranslate"><span class="pre">degMax</span></code></td>
+<td>A parameter which avoids
+that vectors with a
+rather small convergence
+ratio get overfiltered
+entering in a regime of
+numerical instability.</td>
+<td>This value is a result
+of practice and
+experience. We suggest
+to avoid setting it
+below <code class="docutils literal notranslate"><span class="pre">30</span></code> and be
+quite careful to set it
+too high (&gt; <code class="docutils literal notranslate"><span class="pre">50</span></code>).</td>
+<td><code class="docutils literal notranslate"><span class="pre">36</span></code> in DP,
+<code class="docutils literal notranslate"><span class="pre">18</span></code> in SP.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="reference.html" class="btn btn-neutral float-right" title="References and Contributors" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral" title="General Installation on a Cluster" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, SimLab Quantum Materials.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.9.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

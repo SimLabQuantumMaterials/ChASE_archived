@@ -1,0 +1,189 @@
+.. ChASE documentation master file, created by
+   sphinx-quickstart on Tue Mar 22 15:17:17 2016.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+.. image:: /images/ChASE_Logo_RGB.png
+
+###################################################	   
+ChASE: an Iterative Solver for Dense Eigenproblems
+###################################################
+
+The **Ch**\ ebyshev **A**\ ccelerated **S**\ ubspace **E**\ igensolver
+(ChASE) is a modern and scalable library to solve dense Hermitian (Symmetric)
+algebraic eigenvalue problems of the form
+
+.. math::
+
+   A \hat{x} = \lambda \hat{x} \quad \textrm{with} \quad A^\dagger=A \in
+   \mathbb{C}^{n\times n}\ \ (A^T=A \in \mathbb{R}^{n\times n}),
+
+where :math:`\hat{x} \in \mathbb{C}^{n}\backslash \{0\}` and
+:math:`\lambda \in \mathbb{R}` are the eigenvector and the eigenvalue
+of :math:`A`, respectively.
+   
+
+Use Case and Features
+----------------------------
+
+   * **Real and Complex:** ChASE is templated for real and complex numbers. So it can
+     be used to solve *real symmetric* eigenproblems as well as *complex
+     Hermitian* ones.
+   * **Eigespectrum:** ChASE algorithm is designed to solve for the
+     *extremal portion* of the eigenspectrum (i.e., :math:`\{\lambda_1,
+     \dots ,\lambda_\textsf{nev}\}`). By default it computes the
+     lowest portion of the spectrum but it can compute as well the
+     largest portion by solving for :math:`-A`\ . The library is
+     particularly efficient when no more than 20% of the extremal
+     portion of the eigenspectrum is sought after. For larger
+     fractions the subspace iteration algorithm may struggle to be
+     competitive. Converge could become an issue for fractions close
+     to or larger than 50%.
+   * **Type of Problem:** ChASE can currently handle only standard
+     eigenvalue problems. Generalized eigenvalue problems of the form
+     :math:`A\hat{x} = \lambda B \hat{x}`, with :math:`B` s.p.d., can
+     be solved after factorizing :math:`B = L L^T` and transforming
+     the problem into standard form :math:`A = L^{-1} A L^{-T}`.
+   * **Sequences:** ChASE is particularly efficient when dealing with
+     *sequences of eigenvalue problems*\ , where the eigenvectors
+     solving for one problem can be use as input to accelerate the
+     solution of the next one.
+     
+   * **Vectors input:** Since it is based on subspace iteration, ChASE
+     can receive as input a matrix of vector :math:`\hat{V}` equal to
+     the number of desired eigenvalues. ChASE can experience
+     substantial speed-ups when :math:`\hat{V}` contains some
+     information about the sought after eigenvectors.
+     
+   * **Degree optimization:** For a fixed accuracy level, ChASE can
+     optimize the degree of the Chebyshev polynomial filter so as to
+     minimize the number of FLOPs necessary to reach convergence.
+     
+   * **Precision:** ChASE is also templated to work in *Single
+     Precision* (SP) or *Double Precision* (DP).
+
+
+
+Versions of the library
+------------------------
+
+The library comes in two main versions which are labelled ChASE-MPI
+and ChASE-Elemental. ChASE-MPI is the default version of the library
+and can be installed with the minimum amount of dependencies (BLAS,
+LAPACK, and MPI). ChASE-Elemental requires the additional installation
+of the `Elemental <http://libelemental.org/>`__ library.
+
+ChASE-MPI
+^^^^^^^^^^
+
+ChASE-MPI supports different configurations depending on the available
+hardware resources.
+
+   * **Shared memory build:** This is the simplest configuration and
+     should be exclusively selected when ChASE is used on only one
+     computing node or on a single CPU. The simplicity of this
+     configuration resides in the way the Matrix-Matrix kernel is
+     implemented with respect to the full MPI build.
+
+   * **MPI+Threads build:** On multi-core homogeneous CPU clusters ChASE
+     is bext used in its pure MPI build. In this configuration, ChASE
+     is typically used with one MPI rank per computing node and as
+     many threads as number of available cores per node. 
+
+   * **GPU build:** ChASE-MPI can be configured to take advantage of
+     graphics card on heterogeneous computing clusters. Currently only
+     one GPU card per node is supported. Support for multi-GPUs is
+     currently under development and expected in the near future.
+     
+        * **CuBLAS:** Only the Chebyshev filter, which is the most
+	  computational intensive and scalable part of the
+	  eigensolver, is off-loaded to the GPU cards. The rest is
+	  computed on the CPU and the QR factorization is done
+	  redundantly on each computing node.
+
+        * **MAGMA:** On some computing clusters where is available,
+	  the MAGMA library can be used to perform the QR
+	  factorization redundantly on the GPU. Typically our tests
+	  showed that performance does not improve and sometimes even
+	  deteriorates. This version is still experimental and it is
+	  provided only upon request.
+
+	  
+ChASE-Elemental
+^^^^^^^^^^^^^^^^
+
+ChASE-Elemental takes advantage of the `Elemental
+<http://libelemental.org/>`__ library routines to execute its tasks in
+parallel. The data is distributed using Elemental distribution
+classes. ChASE-Elemental is available in a **pure MPI build** and,
+while it is slightly less performant than ChASE-MPI, it ensure a
+better scalability since, contrary to ChASE-MPI, the QR factorization
+is also executed in parallel. For stability reason, ChASE uses
+Elemental version 0.84. 
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: USER DOCUMENTATION:
+      
+   quick-start
+   installation
+   parameters
+   reference
+..   output
+
+.. indices
+   
+
+.. toctree::
+   :maxdepth: 2
+   :caption: SOURCE DOCUMENTATION:
+
+   parallel
+   algorithm
+
+
+Licenses and Copyright
+^^^^^^^^^^^^^^^^^^^^^^
+*ChASE is licensed under the 3-clause BSD License (BSD License 2.0)*
+
+Copyright (c) 2015-2018, Simulation Laboratory Quantum Materials,
+Forschungszentrum Juelich GmbH, Germany
+
+.. Copyright (c) 2016-2018, Aachen Institute for Advanced Study in
+.. Computational Engineering Science, RWTH Aachen University, Germany
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice, this
+      list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+
+    * Neither the name of
+      
+        | the Simulation  Laboratory Quantum Materials, Forschungszentrum Juelich GmbH, Germany
+        | the Aachen Institute for Advanced Study in Computational Engineering Science, RWTH Aachen University, Germany
+	  
+      nor the names of its contributors may be used to endorse or promote products 
+      derived from this software without specific prior written permission.
+
+NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+   

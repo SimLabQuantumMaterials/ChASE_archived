@@ -1,0 +1,10 @@
+Algorithm optimizations
+***********************
+
+Optimizing Chebyshev degree
+=============================
+WORK IN PROGRESS
+
+Locking and deflation
+=======================
+WORK IN PROGRESS

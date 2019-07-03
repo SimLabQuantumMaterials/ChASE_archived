@@ -1,0 +1,307 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>General Installation on a Cluster &mdash; ChASE 0.9.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/ChASE_Logo_Favicon_RGB.png"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="ChASE 0.9.1 documentation" href="index.html"/>
+        <link rel="next" title="Parameters and Configurations" href="parameters.html"/>
+        <link rel="prev" title="Cloning ChASE source code" href="quick-start/quick-install.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/ChASE_Logo_RGB.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.9rc
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">USER DOCUMENTATION:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quick-start.html">Quick Start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">General Installation on a Cluster</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#library-dependencies">Library Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-installation">Example installation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parameters.html">Parameters and Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">References and Contributors</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SOURCE DOCUMENTATION:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel implementations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algorithm.html">General algorithm</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">ChASE</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>General Installation on a Cluster</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        
+          <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+        
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="general-installation-on-a-cluster">
+<h1>General Installation on a Cluster<a class="headerlink" href="#general-installation-on-a-cluster" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="library-dependencies">
+<h2>Library Dependencies<a class="headerlink" href="#library-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>In order to install the ChASE library on a general purpose computing cluster,
+one has to install or load the necessary dependencies. For the standard MPI
+version of the library these dependencies are the following:</p>
+<ul class="simple">
+<li>a <code class="docutils literal notranslate"><span class="pre">C++</span></code> Compiler;</li>
+<li>a Message Passing Interface (MPI) implementation;</li>
+<li>CMake (version 3.8 or higher);</li>
+<li>a Basic Linear Algebra Subprograms (BLAS) and Linear Algebra PACKage (LAPACK) library;</li>
+<li>a CUDA compiler (GPU version only);</li>
+<li>the Elemental library (ChASE + Elemental only);</li>
+<li>the Boost library (only if you want to use the simple_driver)</li>
+</ul>
+<p>CMake builds ChASE by automatically detecting the location of the
+installed dependency. On most supercomputers it is sufficient to just
+load the corresponding module, e.g. <code class="docutils literal notranslate"><span class="pre">module</span> <span class="pre">load</span> <span class="pre">&lt;modulename&gt;</span></code>. If
+you have loaded/installed multiple versions for the libraries and the
+compiler listed above, then you have to indicate to CMake specific
+paths so that it may choose the correct package. For more details, see
+<a class="reference internal" href="quick-start/quick-install.html#build-label"><span class="std std-ref">Building the ChASE library</span></a>.</p>
+<div class="section" id="example-installation">
+<h3>Example installation<a class="headerlink" href="#example-installation" title="Permalink to this headline">¶</a></h3>
+<p>The following snippet shows how to install ChASE on the JURECA cluster
+(the main general purpose cluster at the Juelich Supercomputing Centre):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/SimLabQuantumMaterials/ChASE.git</span>
+<span class="go">cd ChASE/</span>
+<span class="go">mkdir build</span>
+<span class="go">cd build/</span>
+<span class="go">ml intel-para CMake</span>
+<span class="go">cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc</span>
+<span class="go">make</span>
+</pre></div>
+</div>
+<p>In case you want to compile ChASE with GPU support, you have to load
+the CUDA compiler, which will use CuBLAS as well. On JURECA this can
+be done by loading the module CUDA in addition to the other
+modules. Make sure, that you are using a computer/node with a GPU
+(e.g. check with <cite>nvidia-smi</cite>) and make sure that you have the CUDA
+compiler, e.g. check <cite>which nvcc</cite> or if you are using a module system
+look at <cite>module list</cite>.  The following code will build ChASE with Cuda
+support on JURECA:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/SimLabQuantumMaterials/ChASE.git</span>
+<span class="go">cd ChASE/</span>
+<span class="go">mkdir build</span>
+<span class="go">cd build/</span>
+<span class="go">ml GCC/8.2.0  ParaStationMPI/5.2.1-1 imkl CUDA CMake Boost</span>
+<span class="go">cmake ..</span>
+<span class="go">make</span>
+</pre></div>
+</div>
+<p>To install the simple Driver on JURECA you have to specify an
+additional option to the cmake build process
+<cite>-DBUILD_SIMPLEDRIVER=ON</cite>. You can then call the <cite>simple_driver</cite>
+without an argument to generate a random matrix and call ChASE, or
+specify input arguments. The following code will build ChASE with the
+simple Driver on JURECA:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/SimLabQuantumMaterials/ChASE.git</span>
+<span class="go">cd ChASE/</span>
+<span class="go">mkdir build</span>
+<span class="go">cd build/</span>
+<span class="go">ml intel-para CMake Boost</span>
+<span class="go">cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc -DBUILD_SIMPLEDRIVER=ON</span>
+<span class="go">make</span>
+<span class="go">./simple_driver/simple_driver</span>
+<span class="go">or</span>
+<span class="go">./simple_driver/simple_driver --n &lt;MatrixSize&gt; --input &lt;YourOwnFolder/YourMatrixToSolve.bin&gt;</span>
+</pre></div>
+</div>
+<p>To run the ChASE through the <cite>simple_driver</cite> in parallel, use a MPI
+launcher. For example on JURECA (or any other cluster using a SLURM
+job scheduler)</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">srun -n 2 ./simple_driver/simple_driver</span>
+</pre></div>
+</div>
+<p>where <cite>n</cite> is the number of compute nodes.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="parameters.html" class="btn btn-neutral float-right" title="Parameters and Configurations" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="quick-start/quick-install.html" class="btn btn-neutral" title="Cloning ChASE source code" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, SimLab Quantum Materials.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.9.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
