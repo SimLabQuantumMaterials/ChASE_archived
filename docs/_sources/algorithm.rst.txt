@@ -3,7 +3,7 @@
 General algorithm
 *****************
 This section describes the general algorithm underlying all ChASE implementations.
-WORK IN PROGRESS.
+
 
 .. toctree::
    :maxdepth: 2

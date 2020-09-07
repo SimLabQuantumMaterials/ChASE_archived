@@ -73,7 +73,7 @@ One could also specify a subset or all arguments. The minimal
 arguments that need to be provided are the input matrix and the size
 of such matrix::
 
-  ./simple_driver/simple_driver --n <MatrixSize> --input <YourOwnFolder/YourMatrixToSolve.bin>
+  ./simple_driver/simple_driver --n 1001 --input $HOME/YourOwnFolder/YourMatrixToSolve.bin
   
 To run the `simple_driver` with MPI, start the command with the mpi launcher of your choice, e.g. `mpirun` or `srun`.
 

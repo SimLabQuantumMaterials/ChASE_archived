@@ -182,8 +182,8 @@ supported <em>ports</em> requires administration privileges.</p>
 <h2>GNU compiler<a class="headerlink" href="#gnu-compiler" title="Permalink to this headline">¶</a></h2>
 <p>To install the GNU <code class="docutils literal notranslate"><span class="pre">C</span></code> compiler, GNU <code class="docutils literal notranslate"><span class="pre">C++</span></code> compiler, and GNU
 <code class="docutils literal notranslate"><span class="pre">Fortran</span></code> compiler execute the following commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">gcc8</span>
-<span class="n">sudo</span> <span class="n">port</span> <span class="n">select</span> <span class="o">--</span><span class="nb">set</span> <span class="n">gcc</span> <span class="n">mp</span><span class="o">-</span><span class="n">gcc8</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">gcc10</span>
+<span class="n">sudo</span> <span class="n">port</span> <span class="n">select</span> <span class="o">--</span><span class="nb">set</span> <span class="n">gcc</span> <span class="n">mp</span><span class="o">-</span><span class="n">gcc10</span>
 </pre></div>
 </div>
 </div>
@@ -193,7 +193,7 @@ supported <em>ports</em> requires administration privileges.</p>
 (LAPACK) are both used heavily within ChASE.  On an Apple computer one
 can either use the <a class="reference external" href="https://developer.apple.com/documentation/accelerate">Accelerate</a> framework,
 which is provided out of the box, or one could install <a class="reference external" href="https://www.openblas.net/">OpenBLAS</a> by executing the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">OpenBLAS</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">OpenBLAS</span> <span class="o">+</span><span class="n">native</span>
 </pre></div>
 </div>
 </div>
@@ -266,7 +266,8 @@ following commands:</p>
       <script type="text/javascript" src="../_static/jquery.js"></script>
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

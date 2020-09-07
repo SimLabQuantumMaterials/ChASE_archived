@@ -162,10 +162,10 @@ of <span class="math notranslate nohighlight">\(A\)</span>, respectively.</p>
 <h2>Use Case and Features<a class="headerlink" href="#use-case-and-features" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
-<li><strong>Real and Complex:</strong> ChASE is templated for real and complex numbers. So it can
+<li><p><strong>Real and Complex:</strong> ChASE is templated for real and complex numbers. So it can
 be used to solve <em>real symmetric</em> eigenproblems as well as <em>complex
-Hermitian</em> ones.</li>
-<li><strong>Eigespectrum:</strong> ChASE algorithm is designed to solve for the
+Hermitian</em> ones.</p></li>
+<li><p><strong>Eigespectrum:</strong> ChASE algorithm is designed to solve for the
 <em>extremal portion</em> of the eigenspectrum (i.e., <span class="math notranslate nohighlight">\(\{\lambda_1,
 \dots ,\lambda_\textsf{nev}\}\)</span>). By default it computes the
 lowest portion of the spectrum but it can compute as well the
@@ -174,26 +174,26 @@ particularly efficient when no more than 20% of the extremal
 portion of the eigenspectrum is sought after. For larger
 fractions the subspace iteration algorithm may struggle to be
 competitive. Converge could become an issue for fractions close
-to or larger than 50%.</li>
-<li><strong>Type of Problem:</strong> ChASE can currently handle only standard
+to or larger than 50%.</p></li>
+<li><p><strong>Type of Problem:</strong> ChASE can currently handle only standard
 eigenvalue problems. Generalized eigenvalue problems of the form
 <span class="math notranslate nohighlight">\(A\hat{x} = \lambda B \hat{x}\)</span>, with <span class="math notranslate nohighlight">\(B\)</span> s.p.d., can
 be solved after factorizing <span class="math notranslate nohighlight">\(B = L L^T\)</span> and transforming
-the problem into standard form <span class="math notranslate nohighlight">\(A = L^{-1} A L^{-T}\)</span>.</li>
-<li><strong>Sequences:</strong> ChASE is particularly efficient when dealing with
+the problem into standard form <span class="math notranslate nohighlight">\(A = L^{-1} A L^{-T}\)</span>.</p></li>
+<li><p><strong>Sequences:</strong> ChASE is particularly efficient when dealing with
 <em>sequences of eigenvalue problems</em>, where the eigenvectors
 solving for one problem can be use as input to accelerate the
-solution of the next one.</li>
-<li><strong>Vectors input:</strong> Since it is based on subspace iteration, ChASE
+solution of the next one.</p></li>
+<li><p><strong>Vectors input:</strong> Since it is based on subspace iteration, ChASE
 can receive as input a matrix of vector <span class="math notranslate nohighlight">\(\hat{V}\)</span> equal to
 the number of desired eigenvalues. ChASE can experience
 substantial speed-ups when <span class="math notranslate nohighlight">\(\hat{V}\)</span> contains some
-information about the sought after eigenvectors.</li>
-<li><strong>Degree optimization:</strong> For a fixed accuracy level, ChASE can
+information about the sought after eigenvectors.</p></li>
+<li><p><strong>Degree optimization:</strong> For a fixed accuracy level, ChASE can
 optimize the degree of the Chebyshev polynomial filter so as to
-minimize the number of FLOPs necessary to reach convergence.</li>
-<li><strong>Precision:</strong> ChASE is also templated to work in <em>Single
-Precision</em> (SP) or <em>Double Precision</em> (DP).</li>
+minimize the number of FLOPs necessary to reach convergence.</p></li>
+<li><p><strong>Precision:</strong> ChASE is also templated to work in <em>Single
+Precision</em> (SP) or <em>Double Precision</em> (DP).</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -210,34 +210,32 @@ of the <a class="reference external" href="http://libelemental.org/">Elemental</
 hardware resources.</p>
 <blockquote>
 <div><ul>
-<li><p class="first"><strong>Shared memory build:</strong> This is the simplest configuration and
+<li><p><strong>Shared memory build:</strong> This is the simplest configuration and
 should be exclusively selected when ChASE is used on only one
 computing node or on a single CPU. The simplicity of this
 configuration resides in the way the Matrix-Matrix kernel is
-implemented with respect to the full MPI build.</p>
-</li>
-<li><p class="first"><strong>MPI+Threads build:</strong> On multi-core homogeneous CPU clusters ChASE
+implemented with respect to the full MPI build.</p></li>
+<li><p><strong>MPI+Threads build:</strong> On multi-core homogeneous CPU clusters ChASE
 is bext used in its pure MPI build. In this configuration, ChASE
 is typically used with one MPI rank per computing node and as
-many threads as number of available cores per node.</p>
-</li>
-<li><p class="first"><strong>GPU build:</strong> ChASE-MPI can be configured to take advantage of
+many threads as number of available cores per node.</p></li>
+<li><p><strong>GPU build:</strong> ChASE-MPI can be configured to take advantage of
 graphics card on heterogeneous computing clusters. Currently only
 one GPU card per node is supported. Support for multi-GPUs is
 currently under development and expected in the near future.</p>
 <blockquote>
 <div><ul class="simple">
-<li><strong>CuBLAS:</strong> Only the Chebyshev filter, which is the most
+<li><p><strong>CuBLAS:</strong> Only the Chebyshev filter, which is the most
 computational intensive and scalable part of the
 eigensolver, is off-loaded to the GPU cards. The rest is
 computed on the CPU and the QR factorization is done
-redundantly on each computing node.</li>
-<li><strong>MAGMA:</strong> On some computing clusters where is available,
+redundantly on each computing node.</p></li>
+<li><p><strong>MAGMA:</strong> On some computing clusters where is available,
 the MAGMA library can be used to perform the QR
 factorization redundantly on the GPU. Typically our tests
 showed that performance does not improve and sometimes even
 deteriorates. This version is still experimental and it is
-provided only upon request.</li>
+provided only upon request.</p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -308,14 +306,12 @@ Forschungszentrum Juelich GmbH, Germany</p>
 modification, are permitted provided that the following conditions are met:</p>
 <blockquote>
 <div><ul>
-<li><p class="first">Redistributions of source code must retain the above copyright notice, this
-list of conditions and the following disclaimer.</p>
-</li>
-<li><p class="first">Redistributions in binary form must reproduce the above copyright notice,
+<li><p>Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.</p></li>
+<li><p>Redistributions in binary form must reproduce the above copyright notice,
 this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.</p>
-</li>
-<li><p class="first">Neither the name of</p>
+and/or other materials provided with the distribution.</p></li>
+<li><p>Neither the name of</p>
 <blockquote>
 <div><div class="line-block">
 <div class="line">the Simulation  Laboratory Quantum Materials, Forschungszentrum Juelich GmbH, Germany</div>
@@ -390,7 +386,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

@@ -44,8 +44,7 @@ version of the library these dependencies are the following:
 * CMake (version 3.8 or higher);
 * a Basic Linear Algebra Subprograms (BLAS) and Linear Algebra PACKage (LAPACK) library;
 * a CUDA compiler (GPU version only);
-* the Elemental library (ChASE + Elemental only);
-* the Boost library (only if you want to use the simple_driver)
+* the Elemental library (ChASE + Elemental only).
 
 CMake builds ChASE by automatically detecting the location of the
 installed dependency. On most supercomputers it is sufficient to just
@@ -58,7 +57,7 @@ paths so that it may choose the correct package. For more details, see
 Example installation
 --------------------
 
-The following snippet shows how to install ChASE on the JURECA cluster
+The following snippet shows how to install ChASE on the JUWELS cluster
 (the main general purpose cluster at the Juelich Supercomputing Centre):
 
 .. code-block:: console
@@ -68,17 +67,23 @@ The following snippet shows how to install ChASE on the JURECA cluster
   mkdir build
   cd build/
   ml intel-para CMake
-  cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc
+  cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc -DCMAKE_C_FLAGS=-no-multibyte-chars -DCMAKE_CXX_FLAGS=-no-multibyte-chars
   make
 
+Two additional flags ``-DCMAKE_C_FLAGS=-no-multibyte-chars`` and 
+``-DCMAKE_CXX_FLAGS=-no-multibyte-chars`` are added to ignore
+the error `Catastrophic error: could not set locale "" to allow processing of multibyte characters`
+produced by the internal bug of some versions of Intel Compiler.
+They can be elimited if you do not encouter the relevant problems.
+
 In case you want to compile ChASE with GPU support, you have to load
-the CUDA compiler, which will use CuBLAS as well. On JURECA this can
+the CUDA compiler, which will use CuBLAS as well. On JUWELS this can
 be done by loading the module CUDA in addition to the other
 modules. Make sure, that you are using a computer/node with a GPU
 (e.g. check with `nvidia-smi`) and make sure that you have the CUDA
 compiler, e.g. check `which nvcc` or if you are using a module system
 look at `module list`.  The following code will build ChASE with Cuda
-support on JURECA:
+support on JUWELS:
 
 .. code-block:: console
 
@@ -86,7 +91,7 @@ support on JURECA:
   cd ChASE/
   mkdir build
   cd build/
-  ml GCC/8.2.0  ParaStationMPI/5.2.1-1 imkl CUDA CMake Boost
+  ml GCC/8.3.0  ParaStationMPI/5.4.4-1 imkl CUDA CMake Boost
   cmake ..
   make
 
@@ -105,12 +110,12 @@ support on JURECA:
   make
   ./blas_driver --n 9273 --mode 'R' --opt S --double true --legacy=true --name nacl --path_in /homeb/slai/slai00/MATrix/NaCl/size9k/bin/ --nev 256 --bgn 1 --end 16 --sequence=true --nex 51
 
-To install the simple Driver on JURECA you have to specify an
+To install the simple Driver on JUWELS you have to specify an
 additional option to the cmake build process
 `-DBUILD_SIMPLEDRIVER=ON`. You can then call the `simple_driver`
 without an argument to generate a random matrix and call ChASE, or
 specify input arguments. The following code will build ChASE with the
-simple Driver on JURECA:
+simple Driver on JUWELS:
 
 .. code-block:: console
 
@@ -119,20 +124,16 @@ simple Driver on JURECA:
   mkdir build
   cd build/
   ml intel-para CMake Boost
-  cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc -DBUILD_SIMPLEDRIVER=ON
+  cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc -DBUILD_SIMPLEDRIVER=ON -DCMAKE_C_FLAGS=-no-multibyte-chars -DCMAKE_CXX_FLAGS=-no-multibyte-chars
   make
   ./simple_driver/simple_driver
   or
-  ./simple_driver/simple_driver --n <MatrixSize> --input <YourOwnFolder/YourMatrixToSolve.bin>
+  ./simple_driver/simple_driver --n 3893 --input /p/project/cslai/slai00/MATrix/NaCl/size4k/bin/gmat_1_1.bin
 
-To run the ChASE through the `simple_driver` in parallel, use a MPI
-launcher. For example on JURECA (or any other cluster using a SLURM
-job scheduler)
+To run the `simple_driver` in parallel, use a mpi launcher. E.g. on JUWELS (or other SLRUM based Cluster)
 
 .. code-block:: console
 
   srun -n 2 ./simple_driver/simple_driver
-
-where `n` is the number of compute nodes.
 
 
