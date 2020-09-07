@@ -21,8 +21,8 @@ GNU compiler
 To install the GNU ``C`` compiler, GNU ``C++`` compiler, and GNU
 ``Fortran`` compiler execute the following commands::
 
-    sudo port install gcc8
-    sudo port select --set gcc mp-gcc8
+    sudo port install gcc10
+    sudo port select --set gcc mp-gcc10
 
     
 Installing BLAS and LAPACK
@@ -35,7 +35,8 @@ can either use the `Accelerate
 which is provided out of the box, or one could install `OpenBLAS
 <https://www.openblas.net/>`_ by executing the following command::
 
-    sudo port install OpenBLAS
+    sudo port install OpenBLAS +native
+
 
 
 Installing MPI

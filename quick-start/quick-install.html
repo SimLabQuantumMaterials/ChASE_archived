@@ -227,7 +227,7 @@ Clement matrix is generated and default values are used:</p>
 <p>One could also specify a subset or all arguments. The minimal
 arguments that need to be provided are the input matrix and the size
 of such matrix:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">simple_driver</span><span class="o">/</span><span class="n">simple_driver</span> <span class="o">--</span><span class="n">n</span> <span class="o">&lt;</span><span class="n">MatrixSize</span><span class="o">&gt;</span> <span class="o">--</span><span class="nb">input</span> <span class="o">&lt;</span><span class="n">YourOwnFolder</span><span class="o">/</span><span class="n">YourMatrixToSolve</span><span class="o">.</span><span class="n">bin</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>./simple_driver/simple_driver --n 1001 --input $HOME/YourOwnFolder/YourMatrixToSolve.bin
 </pre></div>
 </div>
 <p>To run the <cite>simple_driver</cite> with MPI, start the command with the mpi launcher of your choice, e.g. <cite>mpirun</cite> or <cite>srun</cite>.</p>
@@ -236,67 +236,67 @@ of such matrix:</p>
 </pre></div>
 </div>
 <p>For sake of completeness we provide a complete list below.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="28%" />
-<col width="72%" />
+<col style="width: 28%" />
+<col style="width: 72%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Parameter (default value)</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter (default value)</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>-h [ –help ]</td>
-<td>Shows the full list of parameters</td>
+<tbody>
+<tr class="row-even"><td><p>-h [ –help ]</p></td>
+<td><p>Shows the full list of parameters</p></td>
 </tr>
-<tr class="row-odd"><td>–n arg (=1001)</td>
-<td>Size of the Input Matrix</td>
+<tr class="row-odd"><td><p>–n arg (=1001)</p></td>
+<td><p>Size of the Input Matrix</p></td>
 </tr>
-<tr class="row-even"><td>–double arg (=1)</td>
-<td>Are matrix entries of type double, false indicates type single</td>
+<tr class="row-even"><td><p>–double arg (=1)</p></td>
+<td><p>Are matrix entries of type double, false indicates type single</p></td>
 </tr>
-<tr class="row-odd"><td>–complex arg (=1)</td>
-<td>Is matrix complex valued, false indicates a real matrix</td>
+<tr class="row-odd"><td><p>–complex arg (=1)</p></td>
+<td><p>Is matrix complex valued, false indicates a real matrix</p></td>
 </tr>
-<tr class="row-even"><td>–nev arg (=100)</td>
-<td>Wanted Number of Eigenpairs</td>
+<tr class="row-even"><td><p>–nev arg (=100)</p></td>
+<td><p>Wanted Number of Eigenpairs</p></td>
 </tr>
-<tr class="row-odd"><td>–nex arg (=25)</td>
-<td>Extra Search Dimensions</td>
+<tr class="row-odd"><td><p>–nex arg (=25)</p></td>
+<td><p>Extra Search Dimensions</p></td>
 </tr>
-<tr class="row-even"><td>–deg arg (=20)</td>
-<td>Initial filtering degree</td>
+<tr class="row-even"><td><p>–deg arg (=20)</p></td>
+<td><p>Initial filtering degree</p></td>
 </tr>
-<tr class="row-odd"><td>–bgn arg (=2)</td>
-<td>Start index of matrix sequence (if any)</td>
+<tr class="row-odd"><td><p>–bgn arg (=2)</p></td>
+<td><p>Start index of matrix sequence (if any)</p></td>
 </tr>
-<tr class="row-even"><td>–end arg (=2)</td>
-<td>End index of matrix sequence (if any)</td>
+<tr class="row-even"><td><p>–end arg (=2)</p></td>
+<td><p>End index of matrix sequence (if any)</p></td>
 </tr>
-<tr class="row-odd"><td>–tol arg (=1e-10)</td>
-<td>Minimum tolerance required to declare eigenpairs converged</td>
+<tr class="row-odd"><td><p>–tol arg (=1e-10)</p></td>
+<td><p>Minimum tolerance required to declare eigenpairs converged</p></td>
 </tr>
-<tr class="row-even"><td>–input arg</td>
-<td>Path to the input matrix/matrices</td>
+<tr class="row-even"><td><p>–input arg</p></td>
+<td><p>Path to the input matrix/matrices</p></td>
 </tr>
-<tr class="row-odd"><td>–output arg (=eig.txt)</td>
-<td>Path to the write the eigenvalues</td>
+<tr class="row-odd"><td><p>–output arg (=eig.txt)</p></td>
+<td><p>Path to the write the eigenvalues</p></td>
 </tr>
-<tr class="row-even"><td>–mode arg (=R)</td>
-<td>Valid values are <code class="docutils literal notranslate"><span class="pre">R</span></code> (Random) or <code class="docutils literal notranslate"><span class="pre">A</span></code> (Approximate)</td>
+<tr class="row-even"><td><p>–mode arg (=R)</p></td>
+<td><p>Valid values are <code class="docutils literal notranslate"><span class="pre">R</span></code> (Random) or <code class="docutils literal notranslate"><span class="pre">A</span></code> (Approximate)</p></td>
 </tr>
-<tr class="row-odd"><td>–opt arg (=N)</td>
-<td>Valid values are Optimi <code class="docutils literal notranslate"><span class="pre">S</span></code> e, or do <code class="docutils literal notranslate"><span class="pre">N</span></code> ot optimise degree</td>
+<tr class="row-odd"><td><p>–opt arg (=N)</p></td>
+<td><p>Valid values are Optimi <code class="docutils literal notranslate"><span class="pre">S</span></code> e, or do <code class="docutils literal notranslate"><span class="pre">N</span></code> ot optimise degree</p></td>
 </tr>
-<tr class="row-even"><td>–path_eigp arg</td>
-<td>Path to approximate solutions, only required when
-mode is <code class="docutils literal notranslate"><span class="pre">A</span></code> pproximate, otherwise not used</td>
+<tr class="row-even"><td><p>–path_eigp arg</p></td>
+<td><p>Path to approximate solutions, only required when
+mode is <code class="docutils literal notranslate"><span class="pre">A</span></code> pproximate, otherwise not used</p></td>
 </tr>
-<tr class="row-odd"><td>–perturb arg (=0)</td>
-<td>Perturbation of eigenvalues used for
+<tr class="row-odd"><td><p>–perturb arg (=0)</p></td>
+<td><p>Perturbation of eigenvalues used for
 second run. Only used with single matrix
-to test effectiveness of <code class="docutils literal notranslate"><span class="pre">A</span></code> pproximate mode</td>
+to test effectiveness of <code class="docutils literal notranslate"><span class="pre">A</span></code> pproximate mode</p></td>
 </tr>
 </tbody>
 </table>
@@ -352,7 +352,8 @@ to test effectiveness of <code class="docutils literal notranslate"><span class=
       <script type="text/javascript" src="../_static/jquery.js"></script>
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

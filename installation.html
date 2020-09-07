@@ -161,13 +161,12 @@
 one has to install or load the necessary dependencies. For the standard MPI
 version of the library these dependencies are the following:</p>
 <ul class="simple">
-<li>a <code class="docutils literal notranslate"><span class="pre">C++</span></code> Compiler;</li>
-<li>a Message Passing Interface (MPI) implementation;</li>
-<li>CMake (version 3.8 or higher);</li>
-<li>a Basic Linear Algebra Subprograms (BLAS) and Linear Algebra PACKage (LAPACK) library;</li>
-<li>a CUDA compiler (GPU version only);</li>
-<li>the Elemental library (ChASE + Elemental only);</li>
-<li>the Boost library (only if you want to use the simple_driver)</li>
+<li><p>a <code class="docutils literal notranslate"><span class="pre">C++</span></code> Compiler;</p></li>
+<li><p>a Message Passing Interface (MPI) implementation;</p></li>
+<li><p>CMake (version 3.8 or higher);</p></li>
+<li><p>a Basic Linear Algebra Subprograms (BLAS) and Linear Algebra PACKage (LAPACK) library;</p></li>
+<li><p>a CUDA compiler (GPU version only);</p></li>
+<li><p>the Elemental library (ChASE + Elemental only).</p></li>
 </ul>
 <p>CMake builds ChASE by automatically detecting the location of the
 installed dependency. On most supercomputers it is sufficient to just
@@ -178,59 +177,61 @@ paths so that it may choose the correct package. For more details, see
 <a class="reference internal" href="quick-start/quick-install.html#build-label"><span class="std std-ref">Building the ChASE library</span></a>.</p>
 <div class="section" id="example-installation">
 <h3>Example installation<a class="headerlink" href="#example-installation" title="Permalink to this headline">¶</a></h3>
-<p>The following snippet shows how to install ChASE on the JURECA cluster
+<p>The following snippet shows how to install ChASE on the JUWELS cluster
 (the main general purpose cluster at the Juelich Supercomputing Centre):</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/SimLabQuantumMaterials/ChASE.git</span>
 <span class="go">cd ChASE/</span>
 <span class="go">mkdir build</span>
 <span class="go">cd build/</span>
 <span class="go">ml intel-para CMake</span>
-<span class="go">cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc</span>
+<span class="go">cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc -DCMAKE_C_FLAGS=-no-multibyte-chars -DCMAKE_CXX_FLAGS=-no-multibyte-chars</span>
 <span class="go">make</span>
 </pre></div>
 </div>
+<p>Two additional flags <code class="docutils literal notranslate"><span class="pre">-DCMAKE_C_FLAGS=-no-multibyte-chars</span></code> and
+<code class="docutils literal notranslate"><span class="pre">-DCMAKE_CXX_FLAGS=-no-multibyte-chars</span></code> are added to ignore
+the error <cite>Catastrophic error: could not set locale “” to allow processing of multibyte characters</cite>
+produced by the internal bug of some versions of Intel Compiler.
+They can be elimited if you do not encouter the relevant problems.</p>
 <p>In case you want to compile ChASE with GPU support, you have to load
-the CUDA compiler, which will use CuBLAS as well. On JURECA this can
+the CUDA compiler, which will use CuBLAS as well. On JUWELS this can
 be done by loading the module CUDA in addition to the other
 modules. Make sure, that you are using a computer/node with a GPU
 (e.g. check with <cite>nvidia-smi</cite>) and make sure that you have the CUDA
 compiler, e.g. check <cite>which nvcc</cite> or if you are using a module system
 look at <cite>module list</cite>.  The following code will build ChASE with Cuda
-support on JURECA:</p>
+support on JUWELS:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/SimLabQuantumMaterials/ChASE.git</span>
 <span class="go">cd ChASE/</span>
 <span class="go">mkdir build</span>
 <span class="go">cd build/</span>
-<span class="go">ml GCC/8.2.0  ParaStationMPI/5.2.1-1 imkl CUDA CMake Boost</span>
+<span class="go">ml GCC/8.3.0  ParaStationMPI/5.4.4-1 imkl CUDA CMake Boost</span>
 <span class="go">cmake ..</span>
 <span class="go">make</span>
 </pre></div>
 </div>
-<p>To install the simple Driver on JURECA you have to specify an
+<p>To install the simple Driver on JUWELS you have to specify an
 additional option to the cmake build process
 <cite>-DBUILD_SIMPLEDRIVER=ON</cite>. You can then call the <cite>simple_driver</cite>
 without an argument to generate a random matrix and call ChASE, or
 specify input arguments. The following code will build ChASE with the
-simple Driver on JURECA:</p>
+simple Driver on JUWELS:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/SimLabQuantumMaterials/ChASE.git</span>
 <span class="go">cd ChASE/</span>
 <span class="go">mkdir build</span>
 <span class="go">cd build/</span>
 <span class="go">ml intel-para CMake Boost</span>
-<span class="go">cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc -DBUILD_SIMPLEDRIVER=ON</span>
+<span class="go">cmake .. -DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc -DBUILD_SIMPLEDRIVER=ON -DCMAKE_C_FLAGS=-no-multibyte-chars -DCMAKE_CXX_FLAGS=-no-multibyte-chars</span>
 <span class="go">make</span>
 <span class="go">./simple_driver/simple_driver</span>
 <span class="go">or</span>
-<span class="go">./simple_driver/simple_driver --n &lt;MatrixSize&gt; --input &lt;YourOwnFolder/YourMatrixToSolve.bin&gt;</span>
+<span class="go">./simple_driver/simple_driver --n 3893 --input /p/project/cslai/slai00/MATrix/NaCl/size4k/bin/gmat_1_1.bin</span>
 </pre></div>
 </div>
-<p>To run the ChASE through the <cite>simple_driver</cite> in parallel, use a MPI
-launcher. For example on JURECA (or any other cluster using a SLURM
-job scheduler)</p>
+<p>To run the <cite>simple_driver</cite> in parallel, use a mpi launcher. E.g. on JUWELS (or other SLRUM based Cluster)</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">srun -n 2 ./simple_driver/simple_driver</span>
 </pre></div>
 </div>
-<p>where <cite>n</cite> is the number of compute nodes.</p>
 </div>
 </div>
 </div>
@@ -285,7 +286,8 @@ job scheduler)</p>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="_static/language_data.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
