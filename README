@@ -1,25 +1,18 @@
-ChASE Version 0.9rc
-=============================
+This ChASE library repository is NO LONGER MAINTAINED
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Chebyshev Accelerated Subspace iteration Eigensolver.
+This repository is no longer updated and maintained
 
-We provide two versions of ChASE:
-1. ChASE-MPI
+The ChASE project has been migrated to a its own group repository
 
-   Using an custom MPI-based routine for the `HEMM`.
+https://github.com/ChASE-library
 
-2. ChASE-Elemental
+The ChASE library can be found there in its own repository which mirrors a Gitlab repository where the library is currently developed and maintained.
 
-   Using the Elemental distributed-memory linear algebra framework.
-   http://libelemental.org/
+https://github.com/ChASE-library/ChASE
 
-Building ChASE
---------------
+Up-to-date documentation for the ChAse library can be found at
 
-ChASE build with the CMake system.
+https://chase-library.github.io/ChASE/index.html
 
-The following should generate a driver that demonstrates how to use ChASE:
-
-         cmake /path/to/this/repo
-         make chase_driver
-
+The ChASE library is also forked under the SimLabQuantumMaterials github group and it is updated periodically from the main repo.
